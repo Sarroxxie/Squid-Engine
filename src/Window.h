@@ -15,8 +15,6 @@ class Window
     Window(int width, int height, std::string application_name);
     ~Window();
 
-    void initGLFW();
-
     int getWidth();
     int getHeight();
 

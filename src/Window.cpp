@@ -6,6 +6,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     // interface between the window callback and the rest of the code auto*
     // callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
 
+    // TODO: remove this template code, only here for future reference
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         std::cout << "I'm in space\n";
     }
@@ -20,22 +21,19 @@ Window::Window(int width, int height, std::string appName)
     : width(width)
     , height(height)
     , appName(appName) {
-    initGLFW();
-}
-
-Window::~Window() {
-    glfwDestroyWindow(window);
-}
-
-void Window::initGLFW() {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     window = glfwCreateWindow(width, height, appName.c_str(), nullptr, nullptr);
 
+    // set callbacks
     glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
     glfwSetKeyCallback(window, keyCallback);
+}
+
+Window::~Window() {
+    glfwDestroyWindow(window);
 }
 
 int Window::getWidth() {

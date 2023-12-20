@@ -9,8 +9,11 @@
 int main() {
     Window window(WIDTH, HEIGHT, APP_NAME);
 
-	while (!glfwWindowShouldClose(window.getWindowHandle())) {
-		glfwPollEvents();
-	}
-	return 0;
+    while(!glfwWindowShouldClose(window.getWindowHandle())) {
+        // main loop
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    return 0;
 }
