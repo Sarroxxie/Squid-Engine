@@ -1,34 +1,16 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "Window.h"
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    auto* callbackData = glfwGetWindowUserPointer(window);
-
-    // VulkanRenderer* renderer = (VulkanRenderer*)glfwGetWindowUserPointer(window);
-    // compile shaders
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-        std::cout << "space was pressed\n";
-    }
-}
-
-static void framebufferResizeCallback(GLFWwindow* glfWwindow, int width, int height) {
-	std::cout << "resize got called\n";
-}
+#define WIDTH 1280
+#define HEIGHT 720
+#define APP_NAME "ThesisRenderer"
 
 int main() {
-	glfwInit();
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    Window window(WIDTH, HEIGHT, APP_NAME);
 
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "ThesisRenderer", nullptr, nullptr);
-	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-	glfwSetKeyCallback(window, keyCallback);
-
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window.getWindowHandle())) {
 		glfwPollEvents();
 	}
-	
-	// clean up resources
-	glfwDestroyWindow(window);
-	glfwTerminate();
 	return 0;
 }

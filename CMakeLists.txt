@@ -3,7 +3,11 @@ project(ThesisRenderer)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(ThesisRenderer src/main.cpp)
+add_executable(ThesisRenderer
+src/main.cpp
+src/Window.h
+src/Window.cpp
+)
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ThesisRenderer)
