@@ -14,6 +14,7 @@ set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
 set(GLFW_DIR libs/glfw/)
 set(IMGUI_DIR libs/imgui/)
 set(GLM_DIR libs/glm/)
+set(VKBOOTSTRAP_DIR libs/vk-bootstrap/)
 
 # TODO: see if we need this for model loading
 # set(TINY_GLTF_DIR libs/tiny_gltf/)
@@ -51,3 +52,6 @@ target_link_libraries(ThesisRenderer Vulkan::Vulkan)
 
 add_subdirectory(${GLM_DIR})
 target_link_libraries(ThesisRenderer glm)
+
+add_subdirectory(${VKBOOTSTRAP_DIR})
+target_link_libraries(ThesisRenderer vk-bootstrap::vk-bootstrap)
