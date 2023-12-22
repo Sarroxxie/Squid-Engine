@@ -5,8 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(ThesisRenderer
 src/main.cpp
-src/Window.h
-src/Window.cpp
+src/window/Window.h
+src/window/Window.cpp
+src/setup/InstanceBuilder.h
+src/setup/InstanceBuilder.cpp
 )
 
 # automatically sets the project as startup project in Visual Studio
