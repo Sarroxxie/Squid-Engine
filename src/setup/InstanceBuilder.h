@@ -1,13 +1,10 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
+#include <vector>
 
 class InstanceBuilder
 {
-  private:
-    VkApplicationInfo    applicationInfo;
-    VkInstanceCreateInfo createInfo;
-
   public:
     InstanceBuilder();
     // Sets the name of the application. Default name is "Application" if no name is provided.
@@ -35,8 +32,26 @@ class InstanceBuilder
     // Sets the version of the Vulkan API. Default version is 0.1.3.
     InstanceBuilder& setApiVersion(uint32_t variant, uint32_t major, uint32_t minor);
 
-    // TODO: validation layer + extensions
+    // Requests layers for the instance. An exception will be thrown
+    // if at least one of the Layers is not available.
+    InstanceBuilder& requestLayers(const std::vector<const char*>& layers);
 
-    // Creates a VkInstance.
-    VkResult build(VkInstance& instance);
+    // Requests extensions for the instance. An exception will be thrown if at
+    // least one of the Extensions is not available.
+    InstanceBuilder& requestExtensions(const std::vector<const char*>& extensions);
+
+    // Creates a VkInstance. Throws an exception when creation failed.
+    void build(VkInstance& instance);
+
+  private:
+    VkApplicationInfo    applicationInfo;
+    VkInstanceCreateInfo createInfo;
+
+    // Checks if the added layers are supported by the GPU. Throws an
+    // exception if an extension is not supported.
+    void assertLayerSupport(std::vector<const char*> layers);
+
+    // Checks if the added extensions are supported by the GPU. Throws an
+    // exception if an extension is not supported.
+    void assertExtensionSupport(std::vector<const char*> extensions);
 };
