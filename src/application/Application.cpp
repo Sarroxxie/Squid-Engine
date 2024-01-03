@@ -1,5 +1,10 @@
 #include "Application.h"
 
+void Application::init() {
+    createInstance();
+    selectPhysicalDevice();
+}
+
 VkInstance& Application::getInstance() {
     return instance;
 }

@@ -10,15 +10,23 @@ creation, device selection, etc. can be modified to fit specific needs.
 class Application
 {
   public:
+    // Initializes the application by calling all the pure virtual functions in the correct order.
+    void        init();
     VkInstance& getInstance();
     // Destroys all used resources.
     void cleanup();
 
   protected:
-    VkInstance instance;
-    bool       validInstance = false;
+    VkInstance       instance;
+    VkPhysicalDevice physicalDevice;
+
+    bool validInstance = false;
 
   private:
-    // Takes care of Vulkan Instance creation.
-    virtual void initInstance(){};
+    // Creates the VkInstance. After this function is done, either a valid VkInstance
+    // is stored in the "instance" variable or an exception is thrown.
+    virtual void createInstance() = 0;
+    // Selects the Physical Device. After this function is done, either a valid
+    // VkPhysicalDevice is stored in the "physicalDevice" variable or an exception is thrown.
+    virtual void selectPhysicalDevice() = 0;
 };

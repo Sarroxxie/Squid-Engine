@@ -5,7 +5,7 @@
 #include <vector>
 
 // change this macro to false to disable validation layers
-constexpr bool USE_DEBUG_UTILS = true;
+#define USE_DEBUG_UTILS true
 
 /*
  This class serves as a default implementation for the abstract class
@@ -22,7 +22,9 @@ class DefaultApplication : public Application
     DebugUtilsMessenger debugMessenger;
 
     // Creates a VkInstance and registers validation layers if "USE_DEBUG_UTILS" is set to true.
-    void initInstance();
+    void createInstance();
     // Returns the instance extensions that are required by GLFW.
     std::vector<const char*> getRequiredExtensions();
+    // Uses the DefaultPhysicalDeviceSelector to select the most suitable GPU.
+    void selectPhysicalDevice();
 };
