@@ -3,6 +3,9 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+/*
+Wrapper for creation of a VkInstance.
+*/
 class InstanceBuilder
 {
   public:
@@ -39,6 +42,9 @@ class InstanceBuilder
     // Requests extensions for the instance. An exception will be thrown if at
     // least one of the Extensions is not available.
     InstanceBuilder& requestExtensions(const std::vector<const char*>& extensions);
+
+    // Attaches a Debug Utils Messenger to the instance for debugging its creation and destruction.
+    InstanceBuilder& attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo);
 
     // Creates a VkInstance. Throws an exception when creation failed.
     void build(VkInstance& instance);

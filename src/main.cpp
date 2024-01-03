@@ -1,8 +1,8 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
-// how to include the Vulkan Memory Allocator VMA (if it is installed with the VulkanSDK)
-// #include <vma/vk_mem_alloc.h>
+// how to include the Vulkan Memory Allocator VMA (if it is installed with the
+// VulkanSDK) #include <vma/vk_mem_alloc.h>
 
 #include "application/Window.h"
 #include "application/DefaultApplication.h"
@@ -16,9 +16,7 @@ int main() {
 
     /* TODO: roadmap
      *
-     * 0. Debug Messenger for Validation Layers
-     * 
-     * 1. work through Vulkan tutorial to understand how rendering one frame works
+     * 1. physical and logical device
      * 2. implement swap chaip chain
      * 3. implement graphics pipeline + render pass
      * 4. add ImGui (maybe set context per Window)
@@ -28,10 +26,11 @@ int main() {
 
     Window window(WIDTH, HEIGHT, APP_NAME);
 
-    while(!glfwWindowShouldClose(window.getWindowHandle())) {
+    while(!window.shouldClose()) {
         // main loop
         glfwPollEvents();
     }
+    window.~Window();
 
     app.cleanup();
     glfwTerminate();

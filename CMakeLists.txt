@@ -13,6 +13,8 @@ add_executable(ThesisRenderer
 "src/setup/InstanceBuilder.cpp"
 "src/application/DefaultApplication.h"
 "src/application/DefaultApplication.cpp"
+"src/setup/DebugUtilsMessenger.h"
+"src/setup/DebugUtilsMessenger.cpp"
 )
 
 # automatically sets the project as startup project in Visual Studio

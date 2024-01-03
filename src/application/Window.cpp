@@ -4,7 +4,7 @@
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     // TODO: create callback data to access here if needed -> this is the
     // interface between the window callback and the rest of the code auto*
-    // callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
+    // auto* callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
 
     // TODO: remove this template code, only here for future reference
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
@@ -23,6 +23,7 @@ Window::Window(int width, int height, std::string appName)
     , appName(appName) {
     glfwInit();
 
+    // required when using Vulkan as GLFW was originally created for OpenGL
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     window = glfwCreateWindow(width, height, appName.c_str(), nullptr, nullptr);
@@ -34,6 +35,10 @@ Window::Window(int width, int height, std::string appName)
 
 Window::~Window() {
     glfwDestroyWindow(window);
+}
+
+bool Window::shouldClose() {
+    return glfwWindowShouldClose(window);
 }
 
 int Window::getWidth() {

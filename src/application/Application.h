@@ -3,10 +3,9 @@
 #include <vulkan/vulkan.h>
 
 /*
-This class should keep track of all Vulkan objects that are mandatory for all
-usecases. This includes VkInstance, VkDevice, etc.
-It is an abstract class, so that instance creation, device selection, etc.
-can be modified to fit specific needs.
+This class keeps track of all Vulkan objects that are mandatory for all usecases.
+This includes VkInstance, VkDevice, etc. It is an abstract class, so that instance
+creation, device selection, etc. can be modified to fit specific needs.
  */
 class Application
 {
@@ -20,7 +19,6 @@ class Application
     bool       validInstance = false;
 
   private:
-    // this makes the class abstract -> should be implemented for custom
-    // applications (e.g. instance creation will be done here)
-    virtual void init(){};
+    // Takes care of Vulkan Instance creation.
+    virtual void initInstance(){};
 };

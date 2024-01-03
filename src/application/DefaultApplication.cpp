@@ -6,28 +6,48 @@
 #include <iostream>
 
 DefaultApplication::DefaultApplication() {
-    init();
+    initInstance();
 }
 
-void DefaultApplication::init() {
+void DefaultApplication::cleanup() {
+    if(USE_DEBUG_UTILS)
+        debugMessenger.cleanup(instance);
+    Application::cleanup();
+}
+
+void DefaultApplication::initInstance() {
     InstanceBuilder builder;
     builder.setAppName("Thesis Renderer");
 
-    std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
+    std::vector<const char*> layers;
     std::vector<const char*> extensions = getRequiredExtensions();
-    // required for printing validation layer information
-    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
-    // As some of the requested extensions or validation layers could not be
-    // supported by the GPU, we need to catch exceptions.
+    if(USE_DEBUG_UTILS) {
+        // required when using validation layers
+        layers.push_back("VK_LAYER_KHRONOS_validation");
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+        // get debug information on instance creation and destruction
+        VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfo{};
+        DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(debugUtilsMessengerCreateInfo);
+        builder.attachDebugMessenger(debugUtilsMessengerCreateInfo);
+    }
+
+    // As some of the requested extensions or layers could not be supported by
+    // the GPU, we need to catch exceptions.
     try {
-        builder.requestLayers(validationLayers);
+        builder.requestLayers(layers);
         builder.requestExtensions(extensions);
     } catch(std::runtime_error& re) {
-        std::cout << re.what() << "\n";
+        std::cerr << re.what() << "\n";
         exit(-1);
     }
+
+    // this will internally call "vkCreateInstance(..)"
     builder.build(instance);
+
+    if(USE_DEBUG_UTILS)
+        debugMessenger = DebugUtilsMessenger(instance);
 
     // if instance creation failed, this line is never be called because of the exception
     validInstance = true;

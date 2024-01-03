@@ -74,6 +74,11 @@ InstanceBuilder& InstanceBuilder::requestExtensions(const std::vector<const char
     return *this;
 }
 
+InstanceBuilder& InstanceBuilder::attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo) {
+    createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&messengerCreateInfo;
+    return *this;
+}
+
 void InstanceBuilder::build(VkInstance& instance) {
     if(vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create VkInstance.");
