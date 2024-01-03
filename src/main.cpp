@@ -7,9 +7,9 @@
 #include "application/Window.h"
 #include "application/DefaultApplication.h"
 
-#define WIDTH 1280
-#define HEIGHT 720
-#define APP_NAME "ThesisRenderer"
+constexpr int WIDTH = 1280;
+constexpr int HEIGHT = 720;
+constexpr char APP_NAME[] = "ThesisRenderer";
 
 int main() {
     DefaultApplication app;
