@@ -1,7 +1,8 @@
 #include "DefaultPhysicalDeviceSelector.h"
 
-int DefaultPhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device) {
-    int score = PhysicalDeviceSelector::rateDeviceSuitability(device);
+int DefaultPhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device, const VkSurfaceKHR& surface) {
+    int score =
+        PhysicalDeviceSelector::rateDeviceSuitability(device, surface);
     // The score is only negative if the required queue family indices are not found.
     if(score < 0)
         return -1;

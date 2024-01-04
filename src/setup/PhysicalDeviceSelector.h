@@ -11,10 +11,10 @@ class PhysicalDeviceSelector
 {
   public:
     // Finds the GPU that is most suitable. An expection is thrown if no suitable GPU is found.
-    VkPhysicalDevice& selectPhysicalDevice(VkInstance& instance);
+    VkPhysicalDevice& selectPhysicalDevice(VkInstance& instance, const VkSurfaceKHR& surface);
 
   protected:
     // Rates the suitability of the GPU. Will return a negative score if the
     // QueueFamilyIndices defined in "QueueFamilyIndices.h" are not found.
-    int rateDeviceSuitability(const VkPhysicalDevice& device);
+    int rateDeviceSuitability(const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
 };

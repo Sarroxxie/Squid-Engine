@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <vulkan/vulkan.h>
+#include <vector>
 
 /*
 If different Queue Families are required for your project, you can add them to
@@ -11,7 +12,8 @@ whether a Physical Device is suitable, they must always be in sync.
 */
 
 /*
-Contains the indices to different queue families for later referencing.
+Contains the indices to different queue families for later referencing. To get
+the corresponding VkQueues, use "vkGetDeviceQueue(..)".
 */
 struct QueueFamilyIndices
 {
@@ -19,14 +21,19 @@ struct QueueFamilyIndices
     std::optional<uint32_t> presentFamily;
 
     // Checks if all the indices are set.
-    bool isComplete();
+    bool isComplete() const;
 };
 
-namespace QueueFamilyFinder {
+namespace QueueFamilyUtils {
 
 // Attempts to find the queue family indices to a queue family that supports the
 // families listed in the struct "QueueFamilyIndices". If you want to see if
 // they are support, call "isComplete()" on the return value.
-QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& physicalDevice);
+QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& physicalDevice,
+                                     const VkSurfaceKHR&     surface);
 
-}  // namespace QueueFamilyFinder
+// Simplifies the process of creating a QueueCreateInfo only for unique indices.
+std::vector<VkDeviceQueueCreateInfo> toQueueCreateInfos(QueueFamilyIndices& indices,
+                                                        const float* const queuePriority);
+
+}  // namespace QueueFamilyUtils

@@ -3,7 +3,6 @@
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
-#include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <iostream>
 
@@ -41,17 +40,16 @@ void DefaultApplication::createInstance() {
     }
 
     // As some of the requested extensions or layers could not be supported by
-    // the GPU, we need to catch exceptions.
+    // the GPU or instance creation might fail, we need to catch exceptions.
     try {
         builder.requestLayers(layers);
         builder.requestExtensions(extensions);
+        // this will internally call "vkCreateInstance(..)"
+        builder.build(instance);
     } catch(std::runtime_error& re) {
         std::cerr << "ERROR: " << re.what() << "\n";
         exit(-1);
     }
-
-    // this will internally call "vkCreateInstance(..)"
-    builder.build(instance);
 }
 
 std::vector<const char*> DefaultApplication::getRequiredExtensions() {
@@ -67,12 +65,20 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
     return extensions;
 }
 
-void DefaultApplication::createSurface() {}
+void DefaultApplication::createSurface() {
+    if(glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface)
+       != VK_SUCCESS) {
+        std::cerr << "ERROR: Window Surface creation failed !->destroying all previously created resources...\n ";
+        // Clean all resources before exiting the process to prevent undefined behavior.
+        cleanup();
+        exit(-1);
+    }
+}
 
 void DefaultApplication::selectPhysicalDevice() {
     DefaultPhysicalDeviceSelector selector;
     try {
-        physicalDevice = selector.selectPhysicalDevice(instance);
+        physicalDevice = selector.selectPhysicalDevice(instance, surface);
     } catch(std::runtime_error& re) {
         std::cerr << "ERROR: " << re.what()
                   << " -> destroying all previously created resources...\n";
@@ -83,12 +89,17 @@ void DefaultApplication::selectPhysicalDevice() {
 }
 
 void DefaultApplication::createDevice() {
-    DeviceBuilder builder(physicalDevice);
+    DeviceBuilder builder(physicalDevice, surface);
+    QueueFamilyIndices indices;
     try {
-        builder.build(device);
+        indices = builder.build(device);
     } catch(std::runtime_error& re) {
-        std::cerr << re.what() << " -> destroying all previously created resources...\n";
+        std::cerr << "ERROR: " << re.what()
+                  << " -> destroying all previously created resources...\n";
+        // Clean all resources before exiting the process to prevent undefined behavior.
         cleanup();
         exit(-1);
     }
+    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }

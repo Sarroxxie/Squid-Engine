@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+// this has to be defined before glfw3.h is included so the methods necessary
+// for usage with Vulkan get loaded
+#define GLFW_INCLUDE_VULKAN
 #include <glfw/glfw3.h>
 
 /*

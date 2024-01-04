@@ -21,15 +21,15 @@ class DefaultApplication : public Application
   private:
     DebugUtilsMessenger debugMessenger;
 
-    // Uses the InstanceBuilder to create a VkInstance and registers validation
-    // layers if "USE_DEBUG_UTILS" is set to true.
+    // Uses the InstanceBuilder to create the VkInstance and registers
+    // validation layers if "USE_DEBUG_UTILS" is set to true.
     void createInstance();
     // Returns the instance extensions that are required by GLFW.
     std::vector<const char*> getRequiredExtensions();
-    // TODO: add docs
+    // Creates the Window Surface.
     void createSurface();
     // Uses the DefaultPhysicalDeviceSelector to select the most suitable GPU.
     void selectPhysicalDevice();
-    // Uses the DeviceBuilder to create a VkDevice.
+    // Uses the DeviceBuilder to create the VkDevice.
     void createDevice();
 };

@@ -5,7 +5,8 @@
 #include <vector>
 #include <iostream>
 
-VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& instance) {
+VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& instance,
+                                                               const VkSurfaceKHR& surface) {
     VkPhysicalDevice physicalDevice      = VK_NULL_HANDLE;
     int              physicalDeviceScore = -1;
     uint32_t         deviceCount         = 0;
@@ -19,13 +20,13 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
     for(const auto& device : devices) {
-        if(rateDeviceSuitability(device) > physicalDeviceScore) {
+        if(rateDeviceSuitability(device, surface) > physicalDeviceScore) {
             physicalDevice = device;
         }
     }
 
     if(physicalDevice == VK_NULL_HANDLE) {
-        throw std::runtime_error("No available GPU found!");
+        throw std::runtime_error("No suitable GPU found!");
     }
 
     VkPhysicalDeviceProperties deviceProperties;
@@ -35,8 +36,8 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     return physicalDevice;
 }
 
-int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device) {
-    QueueFamilyIndices indices = QueueFamilyFinder::findQueueFamilies(device);
+int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device, const VkSurfaceKHR& surface) {
+    QueueFamilyIndices indices = QueueFamilyUtils::findQueueFamilies(device, surface);
     if(indices.isComplete()) {
         return 0;
     }

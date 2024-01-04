@@ -1,13 +1,14 @@
 #include "QueueFamiliyIndices.h"
 
 #include <vector>
+#include <set>
 
-bool QueueFamilyIndices::isComplete() {
-    // TODO: reenable presentFamily check when window surface is implemented
-    return graphicsFamily.has_value();  // && presentFamily.has_value();
+bool QueueFamilyIndices::isComplete() const {
+    return graphicsFamily.has_value() && presentFamily.has_value();
 }
 
-QueueFamilyIndices QueueFamilyFinder::findQueueFamilies(const VkPhysicalDevice& physicalDevice) {
+QueueFamilyIndices QueueFamilyUtils::findQueueFamilies(const VkPhysicalDevice& physicalDevice,
+                                                       const VkSurfaceKHR& surface) {
     QueueFamilyIndices indices;
 
     uint32_t queueFamilyCount = 0;
@@ -21,7 +22,32 @@ QueueFamilyIndices QueueFamilyFinder::findQueueFamilies(const VkPhysicalDevice& 
         if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
-        // TODO: query queueFamily for window surface support
+        // query for window surface support
+        VkBool32 surfaceSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &surfaceSupport);
+        if(surfaceSupport) {
+            indices.presentFamily = i;
+        }
     }
     return indices;
+}
+
+std::vector<VkDeviceQueueCreateInfo> QueueFamilyUtils::toQueueCreateInfos(
+    QueueFamilyIndices& indices,
+    const float* const  queuePriority) {
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    // For each unique index, we create a QueueCreateInfo. If we had multiple
+    // QueueCreateInfos for the same index, Vulkan would crash.
+    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
+                                              indices.presentFamily.value()};
+
+    for(uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount       = 1;
+        queueCreateInfo.pQueuePriorities = queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
+
+    return queueCreateInfos;
 }

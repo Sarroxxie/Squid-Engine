@@ -1,22 +1,20 @@
 #include "DeviceBuilder.h"
 
-#include "QueueFamiliyIndices.h"
 #include <stdexcept>
 #include <string>
 
-DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice)
-    : physicalDevice(physicalDevice) {
-    QueueFamilyIndices indices = QueueFamilyFinder::findQueueFamilies(physicalDevice);
+DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
+    : physicalDevice(physicalDevice)
+    , surface(surface) {
+    indices = QueueFamilyUtils::findQueueFamilies(physicalDevice, surface);
 
-    float queuePriority = 1.0f;
-    // We always need a graphics queue to do graphics things.
-    VkDeviceQueueCreateInfo graphicsQueueCreateInfo;
-    graphicsQueueCreateInfo =
-        VkDeviceQueueCreateInfo{VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
-    graphicsQueueCreateInfo.queueCount       = 1;
-    graphicsQueueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-    graphicsQueueCreateInfo.pQueuePriorities = &queuePriority;
-    queueCreateInfos.push_back(graphicsQueueCreateInfo);
+    // TODO: there should be a way to just set the priority to a value and not
+    // having to worry about scope of floats -> improve this
+
+    // IMPORTANT: for this to work, the priority, which is referenced, must not
+    // go out of scope until "build()" was called.
+    queueCreateInfos =
+        QueueFamilyUtils::toQueueCreateInfos(indices, &DEFAULT_QUEUE_PRIORITY);
 
     deviceCreateInfo = VkDeviceCreateInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 }
@@ -34,7 +32,7 @@ DeviceBuilder& DeviceBuilder::setFeatures(const VkPhysicalDeviceFeatures& featur
 DeviceBuilder& DeviceBuilder::requestExtensions(const std::vector<const char*> extensions) {
     if(extensions.size() == 0)
         return *this;
-    deviceCreateInfo.enabledExtensionCount   = extensions.size();
+    deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     deviceCreateInfo.ppEnabledExtensionNames = extensions.data();
     return *this;
 }
@@ -58,13 +56,15 @@ DeviceBuilder& DeviceBuilder::setQueues(const std::vector<VkDeviceQueueCreateInf
     return *this;
 }
 
-void DeviceBuilder::build(VkDevice& device) {
-    deviceCreateInfo.queueCreateInfoCount = queueCreateInfos.size();
-    deviceCreateInfo.pQueueCreateInfos    = queueCreateInfos.data();
+QueueFamilyIndices DeviceBuilder::build(VkDevice& device) {
+    deviceCreateInfo.queueCreateInfoCount =
+        static_cast<uint32_t>(queueCreateInfos.size());
+    deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 
     if(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create VkDevice.");
     }
+    return indices;
 }
 
 void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) {

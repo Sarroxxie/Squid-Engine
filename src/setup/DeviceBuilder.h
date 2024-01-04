@@ -1,18 +1,18 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include <vector>
+#include "QueueFamiliyIndices.h"
 
 /*
-Wrapper for creation of a VkDevice. A graphics queue is added by default (with
-highest priority), which can be discarded by using "setQueues(..)".
+Wrapper for creation of a VkDevice. A graphics queue and a present queue are
+added by default (with highest priority), which can be discarded by using
+"setQueues(..)".
 */
 class DeviceBuilder
 {
   public:
-    // Adds a graphics queue by default (with highest priority). If this is
-    // unwanted, use "setQueues(..)" for full control.
-    DeviceBuilder(VkPhysicalDevice& physicalDevice);
+    // Adds a graphics queue and a present queue by default (with highest
+    // priority). If this is unwanted, use "setQueues(..)" for full control.
+    DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface);
 
     // Sets flags for device creation.
     DeviceBuilder& setFlags(const VkDeviceCreateFlags flags);
@@ -30,13 +30,18 @@ class DeviceBuilder
     // Sets queues for device creation. This will discard every previously added queue.
     DeviceBuilder& setQueues(const std::vector<VkDeviceQueueCreateInfo> queueCreateInfos);
 
-    // Creates a VkDevice. Throws an exception when creation failed.
-    void build(VkDevice& device);
+    // Creates a VkDevice. Throws an exception when creation failed. Also
+    // returns the indices to the created queues.
+    QueueFamilyIndices build(VkDevice& device);
 
   private:
     const VkPhysicalDevice               physicalDevice;
+    const VkSurfaceKHR                   surface;
     VkDeviceCreateInfo                   deviceCreateInfo;
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    QueueFamilyIndices                   indices;
+
+    const float DEFAULT_QUEUE_PRIORITY = 1.0f;
 
     // Checks if the added extensions are supported by the GPU. Throws an
     // exception if an extension is not supported.
