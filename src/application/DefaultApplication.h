@@ -4,8 +4,8 @@
 #include "setup/DebugUtilsMessenger.h"
 #include <vector>
 
-// change this macro to false to disable validation layers
-#define USE_DEBUG_UTILS true
+// change this value to false to disable validation layers
+constexpr bool USE_DEBUG_UTILS = true;
 
 /*
  This class serves as a default implementation for the abstract class
