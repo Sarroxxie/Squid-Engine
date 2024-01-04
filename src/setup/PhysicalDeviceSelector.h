@@ -13,8 +13,8 @@ class PhysicalDeviceSelector
     // Finds the GPU that is most suitable. An expection is thrown if no suitable GPU is found.
     VkPhysicalDevice& selectPhysicalDevice(VkInstance& instance);
 
-  private:
-    // Rates the suitability of the GPU. Higher score means better suitable,
-    // negative score means not suitable at all.
-    virtual int rateDeviceSuitability(const VkPhysicalDevice& device) = 0;
+  protected:
+    // Rates the suitability of the GPU. Will return a negative score if the
+    // QueueFamilyIndices defined in "QueueFamilyIndices.h" are not found.
+    int rateDeviceSuitability(const VkPhysicalDevice& device);
 };

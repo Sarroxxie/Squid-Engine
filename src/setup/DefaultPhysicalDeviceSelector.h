@@ -4,7 +4,7 @@
 
 class DefaultPhysicalDeviceSelector : public PhysicalDeviceSelector
 {
-  private:
+  protected:
     // Preferes dedicated GPUs.
     int rateDeviceSuitability(const VkPhysicalDevice& device);
 };

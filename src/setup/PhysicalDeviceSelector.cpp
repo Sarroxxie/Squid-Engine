@@ -1,5 +1,6 @@
 #include "PhysicalDeviceSelector.h"
 
+#include "QueueFamiliyIndices.h"
 #include <stdexcept>
 #include <vector>
 #include <iostream>
@@ -24,7 +25,7 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     }
 
     if(physicalDevice == VK_NULL_HANDLE) {
-        throw std::runtime_error("No available GPU supports required features!");
+        throw std::runtime_error("No available GPU found!");
     }
 
     VkPhysicalDeviceProperties deviceProperties;
@@ -32,4 +33,12 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     std::cout << "Using Physical Device \"" << deviceProperties.deviceName << "\"\n";
 
     return physicalDevice;
+}
+
+int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device) {
+    QueueFamilyIndices indices = QueueFamilyFinder::findQueueFamilies(device);
+    if(indices.isComplete()) {
+        return 0;
+    }
+    return -1;
 }

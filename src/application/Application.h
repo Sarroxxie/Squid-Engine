@@ -19,6 +19,7 @@ class Application
   protected:
     VkInstance       instance;
     VkPhysicalDevice physicalDevice;
+    VkDevice         device;
 
     bool validInstance = false;
 
