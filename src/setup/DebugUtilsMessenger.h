@@ -29,5 +29,5 @@ class DebugUtilsMessenger
     static void populateDebugUtilsMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
   private:
-    VkDebugUtilsMessengerEXT vkDebugMessenger;
+    VkDebugUtilsMessengerEXT vkDebugMessenger = VK_NULL_HANDLE;
 };

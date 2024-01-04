@@ -2,7 +2,8 @@
 #include <vulkan/vulkan.h>
 
 // how to include the Vulkan Memory Allocator VMA (if it is installed with the
-// VulkanSDK) #include <vma/vk_mem_alloc.h>
+// VulkanSDK) 
+// #include <vma/vk_mem_alloc.h>
 
 #include "application/Window.h"
 #include "application/DefaultApplication.h"
@@ -12,8 +13,6 @@ constexpr int HEIGHT = 720;
 constexpr char APP_NAME[] = "ThesisRenderer";
 
 int main() {
-    DefaultApplication app;
-
     /* TODO: roadmap
      *
      * 1. implement window surface
@@ -25,6 +24,8 @@ int main() {
      */
 
     Window window(WIDTH, HEIGHT, APP_NAME);
+
+    DefaultApplication app(&window);
 
     while(!window.shouldClose()) {
         // main loop

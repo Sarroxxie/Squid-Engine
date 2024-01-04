@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Window.h"
 #include <vulkan/vulkan.h>
 
 /*
@@ -10,6 +11,7 @@ creation, device selection, etc. can be modified to fit specific needs.
 class Application
 {
   public:
+    Application(Window* const window);
     // Initializes the application by calling all the pure virtual functions in the correct order.
     virtual void init() final;
     VkInstance&  getInstance();
@@ -17,23 +19,22 @@ class Application
     void cleanup();
 
   protected:
-    VkInstance       instance;
-    VkPhysicalDevice physicalDevice;
-    VkDevice         device;
+    Window* const    window;
+    VkInstance       instance       = VK_NULL_HANDLE;
+    VkSurfaceKHR     surface        = VK_NULL_HANDLE;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkDevice         device         = VK_NULL_HANDLE;
 
   private:
     // Creates the VkInstance. After the execution of this function, a valid
     // VkInstance must be stored in the variable "instance".
     virtual void createInstance() = 0;
+    // TODO: add docs
+    virtual void createSurface() = 0;
     // Selects the Physical Device. After the execution of this function, a
     // valid VkPhysicalDevice must be stored in the variable "physicalDevice".
     virtual void selectPhysicalDevice() = 0;
     // Creates the (logical) Device. After the execution of this function, a
     // valid VkDevice must be stored in the variable "device".
     virtual void createDevice() = 0;
-
-    // This documentation is needed to clean only those resources that were
-    // created. Important for cases where some part of the initialization fails.
-    bool validInstance = false;
-    bool validDevice   = false;
 };

@@ -1,11 +1,13 @@
 #include "Application.h"
 
+Application::Application(Window* const window)
+    : window(window) {}
+
 void Application::init() {
     createInstance();
-    validInstance = true;
+    createSurface();
     selectPhysicalDevice();
     createDevice();
-    validDevice = true;
 }
 
 VkInstance& Application::getInstance() {
@@ -13,8 +15,10 @@ VkInstance& Application::getInstance() {
 }
 
 void Application::cleanup() {
-    if(validDevice)
+    if(device != VK_NULL_HANDLE)
         vkDestroyDevice(device, nullptr);
-    if(validInstance)
+    if(surface != VK_NULL_HANDLE)
+        vkDestroySurfaceKHR(instance, surface, nullptr);
+    if(instance != VK_NULL_HANDLE)
         vkDestroyInstance(instance, nullptr);
 }

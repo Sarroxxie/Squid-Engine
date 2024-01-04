@@ -7,12 +7,11 @@
 #include <stdexcept>
 #include <iostream>
 
-DefaultApplication::DefaultApplication()
-    : debugMessenger(DebugUtilsMessenger()) {
+DefaultApplication::DefaultApplication(Window* window)
+    : Application::Application(window) {
     init();
-    // As a member variable always has to be initialized, the default constructor is
-    // used on the DebugUtilsMessenger. To get a working debugMessenger however,
-    // you need the call to the non-default constructor which requires a valid instance.
+    // To get a working debugMessenger, we need the call to the non-default
+    // constructor which requires a valid instance.
     if(USE_DEBUG_UTILS)
         debugMessenger = DebugUtilsMessenger(instance);
 }
@@ -68,12 +67,15 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
     return extensions;
 }
 
+void DefaultApplication::createSurface() {}
+
 void DefaultApplication::selectPhysicalDevice() {
     DefaultPhysicalDeviceSelector selector;
     try {
         physicalDevice = selector.selectPhysicalDevice(instance);
     } catch(std::runtime_error& re) {
-        std::cerr << "ERROR: " << re.what() << " -> destroying all previously created resources...\n";
+        std::cerr << "ERROR: " << re.what()
+                  << " -> destroying all previously created resources...\n";
         // Clean all resources before exiting the process to prevent undefined behavior.
         cleanup();
         exit(-1);
