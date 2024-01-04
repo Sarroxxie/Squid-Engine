@@ -17,14 +17,11 @@ QueueFamilyIndices QueueFamilyFinder::findQueueFamilies(const VkPhysicalDevice& 
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
                                              queueFamilies.data());
 
-    int i = 0;
-    for(const auto& queueFamily : queueFamilies) {
-        if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+    for(int i = 0; i < queueFamilyCount; i++) {
+        if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
         // TODO: query queueFamily for window surface support
-
-        i++;
     }
     return indices;
 }

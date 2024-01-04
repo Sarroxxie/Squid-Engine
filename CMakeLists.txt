@@ -20,7 +20,9 @@ add_executable(ThesisRenderer
 "src/setup/DefaultPhysicalDeviceSelector.h"
 "src/setup/DefaultPhysicalDeviceSelector.cpp"
 "src/setup/QueueFamiliyIndices.h"
-"src/setup/QueueFamilyIndices.cpp")
+"src/setup/QueueFamilyIndices.cpp"
+"src/setup/DeviceBuilder.h"
+"src/setup/DeviceBuilder.cpp")
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY VS_STARTUP_PROJECT ThesisRenderer)

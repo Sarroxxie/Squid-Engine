@@ -35,12 +35,11 @@ class InstanceBuilder
     // Sets the version of the Vulkan API. Default version is 0.1.3.
     InstanceBuilder& setApiVersion(uint32_t variant, uint32_t major, uint32_t minor);
 
-    // Requests layers for the instance. An exception will be thrown
-    // if at least one of the Layers is not available.
+    // Requests layers for the instance. Throws an exception if at least one of the Layers is not available.
     InstanceBuilder& requestLayers(const std::vector<const char*>& layers);
 
-    // Requests extensions for the instance. An exception will be thrown if at
-    // least one of the Extensions is not available.
+    // Requests extensions for the instance. Throws an exception if at least one
+    // of the Extensions is not available.
     InstanceBuilder& requestExtensions(const std::vector<const char*>& extensions);
 
     // Attaches a Debug Utils Messenger to the instance for debugging its creation and destruction.

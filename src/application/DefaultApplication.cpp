@@ -1,7 +1,8 @@
 #include "DefaultApplication.h"
+
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
-
+#include "setup/DeviceBuilder.h"
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <iostream>
@@ -52,9 +53,6 @@ void DefaultApplication::createInstance() {
 
     // this will internally call "vkCreateInstance(..)"
     builder.build(instance);
-
-    // if instance creation failed, this line is never be called because of the exception
-    validInstance = true;
 }
 
 std::vector<const char*> DefaultApplication::getRequiredExtensions() {
@@ -75,8 +73,19 @@ void DefaultApplication::selectPhysicalDevice() {
     try {
         physicalDevice = selector.selectPhysicalDevice(instance);
     } catch(std::runtime_error& re) {
-        std::cerr << "ERROR: " << re.what() << " -> destroying all created resources...\n";
+        std::cerr << "ERROR: " << re.what() << " -> destroying all previously created resources...\n";
         // Clean all resources before exiting the process to prevent undefined behavior.
+        cleanup();
+        exit(-1);
+    }
+}
+
+void DefaultApplication::createDevice() {
+    DeviceBuilder builder(physicalDevice);
+    try {
+        builder.build(device);
+    } catch(std::runtime_error& re) {
+        std::cerr << re.what() << " -> destroying all previously created resources...\n";
         cleanup();
         exit(-1);
     }

@@ -16,7 +16,7 @@ int main() {
 
     /* TODO: roadmap
      *
-     * 1. physical and logical device
+     * 1. implement window surface
      * 2. implement swap chaip chain
      * 3. implement graphics pipeline + render pass
      * 4. add ImGui (maybe set context per Window)

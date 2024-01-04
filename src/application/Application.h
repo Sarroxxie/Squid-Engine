@@ -11,8 +11,8 @@ class Application
 {
   public:
     // Initializes the application by calling all the pure virtual functions in the correct order.
-    void        init();
-    VkInstance& getInstance();
+    virtual void init() final;
+    VkInstance&  getInstance();
     // Destroys all used resources.
     void cleanup();
 
@@ -21,13 +21,19 @@ class Application
     VkPhysicalDevice physicalDevice;
     VkDevice         device;
 
-    bool validInstance = false;
-
   private:
-    // Creates the VkInstance. After this function is done, either a valid VkInstance
-    // is stored in the "instance" variable or an exception is thrown.
+    // Creates the VkInstance. After the execution of this function, a valid
+    // VkInstance must be stored in the variable "instance".
     virtual void createInstance() = 0;
-    // Selects the Physical Device. After this function is done, either a valid
-    // VkPhysicalDevice is stored in the "physicalDevice" variable or an exception is thrown.
+    // Selects the Physical Device. After the execution of this function, a
+    // valid VkPhysicalDevice must be stored in the variable "physicalDevice".
     virtual void selectPhysicalDevice() = 0;
+    // Creates the (logical) Device. After the execution of this function, a
+    // valid VkDevice must be stored in the variable "device".
+    virtual void createDevice() = 0;
+
+    // This documentation is needed to clean only those resources that were
+    // created. Important for cases where some part of the initialization fails.
+    bool validInstance = false;
+    bool validDevice   = false;
 };

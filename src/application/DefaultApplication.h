@@ -27,4 +27,6 @@ class DefaultApplication : public Application
     std::vector<const char*> getRequiredExtensions();
     // Uses the DefaultPhysicalDeviceSelector to select the most suitable GPU.
     void selectPhysicalDevice();
+    // TODO: add documentation
+    void createDevice();
 };
