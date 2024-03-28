@@ -17,8 +17,8 @@ int main() {
      *
      * 2. implement swap chain
      * 3. implement graphics pipeline + render pass
-     * 4. add ImGui (maybe set context per Window)
-     * 5. Hello Triangle
+     * 4. Hello Triangle
+     * 5. add ImGui (maybe set context per Window)
      * 6. Shadertoy (use Text Editor Widget from ImGui?)
      */
 

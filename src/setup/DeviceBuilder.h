@@ -22,13 +22,19 @@ class DeviceBuilder
 
     // Requests extensions for the device. Throws an exception if at least one
     // of the Extensions is not available.
-    DeviceBuilder& requestExtensions(const std::vector<const char*> extensions);
+    DeviceBuilder& requestExtensions(const std::vector<const char*>& extensions);
 
+    // NOTE: VkDeviceQueueCreateInfo takes a float* as reference. Make sure that
+    // the value it is referencing does not go out of scope until "build()" was called.
     DeviceBuilder& addQueue(VkDeviceQueueCreateInfo queueCreateInfo);
-    DeviceBuilder& addQueues(const std::vector<VkDeviceQueueCreateInfo> queueCreateInfos);
+    // NOTE: VkDeviceQueueCreateInfo takes a float* as reference. Make sure that
+    // the value it is referencing does not go out of scope until "build()" was called.
+    DeviceBuilder& addQueues(const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos);
 
     // Sets queues for device creation. This will discard every previously added queue.
-    DeviceBuilder& setQueues(const std::vector<VkDeviceQueueCreateInfo> queueCreateInfos);
+    // NOTE: VkDeviceQueueCreateInfo takes a float* as reference. Make sure that
+    // the value it is referencing does not go out of scope until "build()" was called.
+    DeviceBuilder& setQueues(const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos);
 
     // Creates a VkDevice. Throws an exception when creation failed. Also
     // returns the indices to the created queues.

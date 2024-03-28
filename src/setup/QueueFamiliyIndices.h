@@ -32,7 +32,7 @@ namespace QueueFamilyUtils {
 QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& physicalDevice,
                                      const VkSurfaceKHR&     surface);
 
-// Simplifies the process of creating a QueueCreateInfo only for unique indices.
+// Simplifies the process of creating QueueCreateInfos for the indices from QueueFamilyIndices.
 std::vector<VkDeviceQueueCreateInfo> toQueueCreateInfos(QueueFamilyIndices& indices,
                                                         const float* const queuePriority);
 

@@ -90,8 +90,11 @@ void DefaultApplication::selectPhysicalDevice() {
 
 void DefaultApplication::createDevice() {
     DeviceBuilder builder(physicalDevice, surface);
+    // required for swap chain
+    const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     QueueFamilyIndices indices;
     try {
+        builder.requestExtensions(extensions);
         indices = builder.build(device);
     } catch(std::runtime_error& re) {
         std::cerr << "ERROR: " << re.what()

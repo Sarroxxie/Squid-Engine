@@ -8,9 +8,6 @@ DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& sur
     , surface(surface) {
     indices = QueueFamilyUtils::findQueueFamilies(physicalDevice, surface);
 
-    // TODO: there should be a way to just set the priority to a value and not
-    // having to worry about scope of floats -> improve this
-
     // IMPORTANT: for this to work, the priority, which is referenced, must not
     // go out of scope until "build()" was called.
     queueCreateInfos =
@@ -29,9 +26,10 @@ DeviceBuilder& DeviceBuilder::setFeatures(const VkPhysicalDeviceFeatures& featur
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::requestExtensions(const std::vector<const char*> extensions) {
+DeviceBuilder& DeviceBuilder::requestExtensions(const std::vector<const char*>& extensions) {
     if(extensions.size() == 0)
         return *this;
+    assertExtensionSupport(extensions);
     deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     deviceCreateInfo.ppEnabledExtensionNames = extensions.data();
     return *this;
@@ -42,7 +40,7 @@ DeviceBuilder& DeviceBuilder::addQueue(VkDeviceQueueCreateInfo queueCreateInfo) 
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::addQueues(const std::vector<VkDeviceQueueCreateInfo> queueCreateInfos) {
+DeviceBuilder& DeviceBuilder::addQueues(const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos) {
     if(queueCreateInfos.size() == 0)
         return *this;
     // append
@@ -51,7 +49,7 @@ DeviceBuilder& DeviceBuilder::addQueues(const std::vector<VkDeviceQueueCreateInf
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::setQueues(const std::vector<VkDeviceQueueCreateInfo> queueCreateInfos) {
+DeviceBuilder& DeviceBuilder::setQueues(const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos) {
     this->queueCreateInfos = queueCreateInfos;
     return *this;
 }
