@@ -20,8 +20,10 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
     for(const auto& device : devices) {
-        if(rateDeviceSuitability(device, surface) > physicalDeviceScore) {
+        int currentScore = rateDeviceSuitability(device, surface);
+        if(currentScore > physicalDeviceScore) {
             physicalDevice = device;
+            physicalDeviceScore = currentScore;
         }
     }
 
@@ -37,9 +39,20 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
 }
 
 int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device, const VkSurfaceKHR& surface) {
+    int score = 0;
+
+    // these queue families are required
     QueueFamilyIndices indices = QueueFamilyUtils::findQueueFamilies(device, surface);
-    if(indices.isComplete()) {
-        return 0;
+    if(!indices.isComplete()) {
+        return -1;
     }
-    return -1;
+
+    // weighs dedicated GPUs higher
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+        score += 1;
+    }
+
+    return score;
 }
