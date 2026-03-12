@@ -10,7 +10,7 @@
 
 constexpr int WIDTH = 1280;
 constexpr int HEIGHT = 720;
-constexpr char APP_NAME[] = "ThesisRenderer";
+constexpr char APP_NAME[] = "Squid Engine";
 
 int main() {
     /* TODO: roadmap
@@ -24,7 +24,7 @@ int main() {
 
     Window window(WIDTH, HEIGHT, APP_NAME);
 
-    DefaultApplication app(&window);
+    DefaultApplication app(&window, true);
 
     while(!window.shouldClose()) {
         // main loop

@@ -6,8 +6,11 @@
 #include <stdexcept>
 #include <iostream>
 
-DefaultApplication::DefaultApplication(Window* window)
-    : Application::Application(window) {
+DefaultApplication::DefaultApplication(Window* window) : DefaultApplication(window, false) {}
+
+DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
+    : Application::Application(window)
+    , USE_DEBUG_UTILS(useDebugUtils) {
     init();
     // To get a working debugMessenger, we need the call to the non-default
     // constructor which requires a valid instance.

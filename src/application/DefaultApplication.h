@@ -4,9 +4,6 @@
 #include "setup/DebugUtilsMessenger.h"
 #include <vector>
 
-// change this value to false to disable validation layers
-constexpr bool USE_DEBUG_UTILS = true;
-
 /*
  This class serves as a default implementation for the abstract class
  "Application". Take it as a guide on how to implement your own Application.
@@ -14,11 +11,16 @@ constexpr bool USE_DEBUG_UTILS = true;
 class DefaultApplication : public Application
 {
   public:
+    // Creates a DefaultApplication without enabling validation layers.
     DefaultApplication(Window* window);
+    // Creates a DefaultApplication with the option of enabling validation layers.
+    DefaultApplication(Window* window, bool useDebugUtils);
     // Destroys all used resources.
     void cleanup();
 
   private:
+    // whether to use validation layers
+    const bool          USE_DEBUG_UTILS;
     DebugUtilsMessenger debugMessenger;
 
     // Uses the InstanceBuilder to create the VkInstance and registers
