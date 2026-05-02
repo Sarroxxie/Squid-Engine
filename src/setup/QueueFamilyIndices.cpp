@@ -1,5 +1,7 @@
 #include "QueueFamiliyIndices.h"
 
+
+#include "output/VulkanCheck.h"
 #include <vector>
 #include <set>
 
@@ -24,7 +26,8 @@ QueueFamilyIndices QueueFamilyUtils::findQueueFamilies(const VkPhysicalDevice& p
         }
         // query for window surface support
         VkBool32 surfaceSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &surfaceSupport);
+        check(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &surfaceSupport),
+              "Failed to get Physical Device Surface Support.");
         if(surfaceSupport) {
             indices.presentFamily = i;
         }

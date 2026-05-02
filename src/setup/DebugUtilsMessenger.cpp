@@ -1,5 +1,6 @@
 #include "DebugUtilsMessenger.h"
 
+#include "output/VulkanCheck.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -44,10 +45,8 @@ DebugUtilsMessenger::DebugUtilsMessenger(VkInstance& instance) {
     VkDebugUtilsMessengerCreateInfoEXT createInfo{};
     DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(createInfo);
 
-    if(createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger)
-       != VK_SUCCESS) {
-        throw std::runtime_error("Debug Utils Messenger creation failed!");
-    }
+    check(createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger),
+          "Failed to create Debug Utils Messenger.");
 }
 
 void DebugUtilsMessenger::cleanup(VkInstance& instance) {

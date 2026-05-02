@@ -26,7 +26,12 @@ src/setup/QueueFamiliyIndices.h
 src/setup/QueueFamilyIndices.cpp
 
 src/presentation/SwapchainBuilder.h
-src/presentation/SwapchainBuilder.cpp)
+src/presentation/SwapchainBuilder.cpp
+
+src/output/VulkanCheck.h
+src/output/VulkanCheck.cpp
+src/output/Logger.h
+src/output/Logger.cpp)
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SquidEngine)

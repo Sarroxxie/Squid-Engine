@@ -1,6 +1,7 @@
 #include "PhysicalDeviceSelector.h"
 
 #include "QueueFamiliyIndices.h"
+#include "output/VulkanCheck.h"
 #include <stdexcept>
 #include <vector>
 #include <iostream>
@@ -10,14 +11,14 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     VkPhysicalDevice physicalDevice      = VK_NULL_HANDLE;
     int              physicalDeviceScore = -1;
     uint32_t         deviceCount         = 0;
-    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+    check(vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr),
+          "Failed to enumerate Physical Devices.");
 
-    if(deviceCount == 0) {
-        throw std::runtime_error("No available GPU supports Vulkan!");
-    }
+    check(deviceCount != 0, "No available GPU supports Vulkan.");
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+    check(vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data()),
+          "Failed to enumerate Physical Devices.");
 
     for(const auto& device : devices) {
         int currentScore = rateDeviceSuitability(device, surface);
@@ -27,12 +28,11 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
         }
     }
 
-    if(physicalDevice == VK_NULL_HANDLE) {
-        throw std::runtime_error("No suitable GPU found!");
-    }
+    check(physicalDevice != VK_NULL_HANDLE, "No suitable GPU found.");
 
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+    // TODO: should use a logger here!
     std::cout << "Using Physical Device \"" << deviceProperties.deviceName << "\"\n";
 
     return physicalDevice;

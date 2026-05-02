@@ -1,7 +1,8 @@
 #include "DeviceBuilder.h"
 
-#include <stdexcept>
+#include "output/VulkanCheck.h"
 #include <string>
+#include <stdexcept>
 
 DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
     : physicalDevice(physicalDevice)
@@ -59,19 +60,20 @@ QueueFamilyIndices DeviceBuilder::build(VkDevice& device) {
         static_cast<uint32_t>(queueCreateInfos.size());
     deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-    if(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create VkDevice.");
-    }
+    check(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device),
+          "Failed to create VkDevice.");
     return indices;
 }
 
 void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) {
     uint32_t extensionCount;
-    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
+    check(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr),
+          "Failed to enumerate Device Extension Properties.");
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
-                                         availableExtensions.data());
+    check(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
+                                               availableExtensions.data()),
+          "Failed to enumerate Device Extension Properties.");
 
     // collect all extensions that are not available inside this error message
     std::string errorMessage;
