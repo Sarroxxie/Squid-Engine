@@ -28,7 +28,7 @@ namespace QueueFamilyUtils {
 
 // Attempts to find the queue family indices to a queue family that supports the
 // families listed in the struct "QueueFamilyIndices". If you want to see if
-// they are support, call "isComplete()" on the return value.
+// they are supported, call "isComplete()" on the return value.
 QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& physicalDevice,
                                      const VkSurfaceKHR&     surface);
 

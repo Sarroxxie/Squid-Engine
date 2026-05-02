@@ -6,6 +6,10 @@
 #define GLFW_INCLUDE_VULKAN
 #include <glfw/glfw3.h>
 
+// TODO: find another location for these callbacks to make them customizable (should be tied to the Application)
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+static void framebufferResizeCallback(GLFWwindow* glfWwindow, int width, int height);
+
 /*
 This class handles window creation and destruction. As long as the
 "shouldClose()"-method returns false, the window is open.

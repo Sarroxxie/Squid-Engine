@@ -109,3 +109,10 @@ void DefaultApplication::createDevice() {
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
+
+void DefaultApplication::createSwapchain() {
+    swapchainBuilder.setPhysicalDevice(this->physicalDevice);
+    swapchainBuilder.setSurface(this->surface);
+    swapchainBuilder.setToTripleBuffering(); // as this returns a bool, can check if it worked (TODO?)
+    swapchainBuilder.build(this->device, &this->swapchain);
+}

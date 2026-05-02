@@ -20,6 +20,9 @@ int main() {
      * 4. Hello Triangle
      * 5. add ImGui (maybe set context per Window)
      * 6. Shadertoy (use Text Editor Widget from ImGui?)
+     * 
+     * 
+     * -> also split application and rendering! application should handle inputs (and physics?)
      */
 
     Window window(WIDTH, HEIGHT, APP_NAME);

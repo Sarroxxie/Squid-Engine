@@ -8,6 +8,7 @@ void Application::init() {
     createSurface();
     selectPhysicalDevice();
     createDevice();
+    createSwapchain();
 }
 
 VkInstance& Application::getInstance() {
@@ -15,6 +16,8 @@ VkInstance& Application::getInstance() {
 }
 
 void Application::cleanup() {
+    if(swapchain != VK_NULL_HANDLE)
+        vkDestroySwapchainKHR(device, swapchain, nullptr);
     if(device != VK_NULL_HANDLE)
         vkDestroyDevice(device, nullptr);
     if(surface != VK_NULL_HANDLE)

@@ -7,24 +7,26 @@ add_executable(SquidEngine
 src/main.cpp
 src/application/Application.h
 src/application/Application.cpp
-src/application/Window.h
-src/application/Window.cpp
-src/setup/InstanceBuilder.h
-src/setup/InstanceBuilder.cpp
 src/application/DefaultApplication.h
 src/application/DefaultApplication.cpp
+src/application/Window.h
+src/application/Window.cpp
+
 src/setup/DebugUtilsMessenger.h
 src/setup/DebugUtilsMessenger.cpp
-src/setup/PhysicalDeviceSelector.h
-src/setup/PhysicalDeviceSelector.cpp
 src/setup/DefaultPhysicalDeviceSelector.h
 src/setup/DefaultPhysicalDeviceSelector.cpp
-src/setup/QueueFamiliyIndices.h
-src/setup/QueueFamilyIndices.cpp
 src/setup/DeviceBuilder.h
 src/setup/DeviceBuilder.cpp
-src/presentation/SwapChain.h
-src/presentation/SwapChain.cpp)
+src/setup/InstanceBuilder.h
+src/setup/InstanceBuilder.cpp
+src/setup/PhysicalDeviceSelector.h
+src/setup/PhysicalDeviceSelector.cpp
+src/setup/QueueFamiliyIndices.h
+src/setup/QueueFamilyIndices.cpp
+
+src/presentation/SwapchainBuilder.h
+src/presentation/SwapchainBuilder.cpp)
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SquidEngine)

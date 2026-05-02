@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "setup/DebugUtilsMessenger.h"
+#include "presentation/SwapchainBuilder.h"
 #include <vector>
 
 /*
@@ -22,6 +23,7 @@ class DefaultApplication : public Application
     // whether to use validation layers
     const bool          USE_DEBUG_UTILS;
     DebugUtilsMessenger debugMessenger;
+    SwapchainBuilder    swapchainBuilder;
 
     // Uses the InstanceBuilder to create the VkInstance and registers
     // validation layers if "USE_DEBUG_UTILS" is set to true.
@@ -34,4 +36,6 @@ class DefaultApplication : public Application
     void selectPhysicalDevice();
     // Uses the DeviceBuilder to create the VkDevice.
     void createDevice();
+    // Uses the SwapchainBuilder to create the VkSwapchainKHR.
+    void createSwapchain();
 };

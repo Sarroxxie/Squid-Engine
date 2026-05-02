@@ -22,6 +22,7 @@ class Application
     Window* const    window;
     VkInstance       instance       = VK_NULL_HANDLE;
     VkSurfaceKHR     surface        = VK_NULL_HANDLE;
+    VkSwapchainKHR   swapchain      = VK_NULL_HANDLE;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice         device         = VK_NULL_HANDLE;
 
@@ -42,4 +43,7 @@ class Application
     // Creates the (logical) Device. After the execution of this function, a
     // valid VkDevice must be stored in the variable "device".
     virtual void createDevice() = 0;
+    // Creates the Swapchain. After the execution of this function, a valid
+    // VkSwapchainKHR must be stored in the variable "swapchain".
+    virtual void createSwapchain() = 0;
 };

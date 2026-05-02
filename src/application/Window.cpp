@@ -15,6 +15,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 static void framebufferResizeCallback(GLFWwindow* glfWwindow, int width, int height) {
     // TODO: use callback data to trigger a resize for Vulkan
+    // TODO: update width and height of window
     // auto* callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
 }
 
