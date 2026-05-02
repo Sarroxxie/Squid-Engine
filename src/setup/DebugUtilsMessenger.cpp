@@ -11,6 +11,9 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
               const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
               void*                                       userData) {
 
+    //TODO: should also handle this via the logger (and also give a hint to the message severity)
+    //      -> also print message severity
+    //      -> also print message type
     std::cerr << "VALIDATION LAYER: " << callbackData->pMessage << std::endl;
 
     return VK_FALSE;
@@ -56,11 +59,15 @@ void DebugUtilsMessenger::cleanup(VkInstance& instance) {
 void DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
     createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
+                                 // TODO: might enable this conditionally
+                                 //| VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
                                  | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
                                  | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
     createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+                             // TODO: might enable this conditionally
+                             //| VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
     createInfo.pfnUserCallback = debugCallback;
     createInfo.pUserData       = nullptr;
 }

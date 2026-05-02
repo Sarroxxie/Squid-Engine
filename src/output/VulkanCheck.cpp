@@ -1,6 +1,5 @@
 #include "VulkanCheck.h"
 
-#include <vulkan/vulkan.h>
 #include <stdexcept>
 
 void check(VkResult result) {

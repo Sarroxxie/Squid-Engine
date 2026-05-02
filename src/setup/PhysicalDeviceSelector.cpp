@@ -2,7 +2,6 @@
 
 #include "QueueFamiliyIndices.h"
 #include "output/VulkanCheck.h"
-#include <stdexcept>
 #include <vector>
 #include <iostream>
 

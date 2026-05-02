@@ -4,7 +4,7 @@
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
 #include "output/VulkanCheck.h"
-#include <stdexcept>
+#include "output/Logger.h"
 #include <iostream>
 
 DefaultApplication::DefaultApplication(Window* window) : DefaultApplication(window, false) {}
@@ -12,6 +12,7 @@ DefaultApplication::DefaultApplication(Window* window) : DefaultApplication(wind
 DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
     : Application::Application(window)
     , USE_DEBUG_UTILS(useDebugUtils) {
+    LOG("from default application");
     try {
         init();
         // To get a working debugMessenger, we need the call to the non-default
@@ -19,7 +20,7 @@ DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
         if(USE_DEBUG_UTILS)
             debugMessenger = DebugUtilsMessenger(instance);
     } catch(std::runtime_error& e) {
-        std::cout << "UNCAUGHT EXCEPTION: " << e.what() << "\n";
+        std::cerr << "UNCAUGHT EXCEPTION: " << e.what() << "\n";
         // destroying all previously created resources
         cleanup();
         exit(EXIT_FAILURE);
