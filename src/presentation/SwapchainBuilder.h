@@ -13,32 +13,37 @@ class SwapchainBuilder
 {
   public:
     SwapchainBuilder();
-    SwapchainBuilder(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
-    void setPhysicalDevice(VkPhysicalDevice physicalDevice);
+    SwapchainBuilder(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface);
+    void setPhysicalDevice(const VkPhysicalDevice& physicalDevice);
     // TODO: documentation! -> needs valid physical device and surface
-    void build(VkDevice device, VkSwapchainKHR* swapchain);
+    void build(const VkDevice& device, VkSwapchainKHR& swapchain) const;
+
+    // TODO should all setters also return a SwapchainBuilder& back? for function
+    // chaining? this would match the behavior of the InstanceBuilder and the DeviceBuilder
 
     // checks parameters for support and set fields inside the VkSwapchainCreateInfoKHR
-    void setFlags(VkSwapchainCreateFlagsKHR flags);
-    void setSurface(VkSurfaceKHR surface);
-    bool setMinImageCount(uint32_t minImageCount);
-    bool setSurfaceFormat(VkSurfaceFormatKHR surfaceFormat);
-    bool setImageExtent(VkExtent2D imageExtent);
-    bool setImageArrayLayers(uint32_t imageArrayLayers);
-    bool setImageUsage(VkImageUsageFlags imageUsage);
-    void setImageSharingMode(VkSharingMode imageSharingMode);
-    void setQueueFamilyIndices(std::vector<uint32_t> queueFamilyIndices);
-    bool setPreTransform(VkSurfaceTransformFlagBitsKHR preTransform);
-    bool setCompositeAlpha(VkCompositeAlphaFlagBitsKHR compositeAlpha);
-    bool setPresentMode(VkPresentModeKHR presentMode);
-    void setClipped(VkBool32 clipped);
-    void setOldSwapchain(VkSwapchainKHR oldSwapchain);
+    void setFlags(const VkSwapchainCreateFlagsKHR flags);
+    void setSurface(const VkSurfaceKHR surface);
+    bool setMinImageCount(const uint32_t minImageCount);
+    bool setSurfaceFormat(const VkSurfaceFormatKHR surfaceFormat);
+    bool setImageExtent(const VkExtent2D imageExtent);
+    bool setImageArrayLayers(const uint32_t imageArrayLayers);
+    bool setImageUsage(const VkImageUsageFlags imageUsage);
+    void setImageSharingMode(const VkSharingMode imageSharingMode);
+    void setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices);
+    bool setPreTransform(const VkSurfaceTransformFlagBitsKHR preTransform);
+    bool setCompositeAlpha(const VkCompositeAlphaFlagBitsKHR compositeAlpha);
+    bool setPresentMode(const VkPresentModeKHR presentMode);
+    void setClipped(const VkBool32 clipped);
+    void setOldSwapchain(const VkSwapchainKHR oldSwapchain);
 
-    bool setSwapchainCreateInfo(VkSwapchainCreateInfoKHR swapchainCreateInfo);
+    bool setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo);
 
     bool enableVsyncPresentMode();
     bool setToDoubleBuffering();
     bool setToTripleBuffering();
+
+    // TODO: do we need getters to get the current values?
 
   private:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -66,12 +71,12 @@ class SwapchainBuilder
     void querySurfaceFormats();
     void querySurfacePresentModes();
 
-    bool checkMinImageCountSupport(uint32_t minImageCount);
-    bool checkSurfaceFormatSupport(VkSurfaceFormatKHR imageFormat);
-    bool checkImageExtentSupport(VkExtent2D imageExtent);
-    bool checkImageArrayLayersSupport(uint32_t imageArrayLayers);
-    bool checkImageUsageSupport(VkImageUsageFlags imageUsage);
-    bool checkPreTransformSupport(VkSurfaceTransformFlagBitsKHR preTransform);
-    bool checkCompositeAlphaSupport(VkCompositeAlphaFlagBitsKHR compositeAlpha);
-    bool checkPresentModeSupport(VkPresentModeKHR presentMode);
+    bool checkMinImageCountSupport(uint32_t minImageCount) const;
+    bool checkSurfaceFormatSupport(VkSurfaceFormatKHR imageFormat) const;
+    bool checkImageExtentSupport(VkExtent2D imageExtent) const;
+    bool checkImageArrayLayersSupport(uint32_t imageArrayLayers) const;
+    bool checkImageUsageSupport(VkImageUsageFlags imageUsage) const;
+    bool checkPreTransformSupport(VkSurfaceTransformFlagBitsKHR preTransform) const;
+    bool checkCompositeAlphaSupport(VkCompositeAlphaFlagBitsKHR compositeAlpha) const;
+    bool checkPresentModeSupport(VkPresentModeKHR presentMode) const;
 };

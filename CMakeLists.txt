@@ -30,8 +30,7 @@ src/presentation/SwapchainBuilder.cpp
 
 src/output/VulkanCheck.h
 src/output/VulkanCheck.cpp
-src/output/Logger.h
-src/output/Logger.cpp)
+src/output/Logger.h)
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SquidEngine)

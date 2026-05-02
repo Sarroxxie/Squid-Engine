@@ -1,6 +1,7 @@
 #include "DeviceBuilder.h"
 
 #include "output/VulkanCheck.h"
+#include "output/Logger.h"
 #include <string>
 #include <stdexcept>
 
@@ -36,7 +37,7 @@ DeviceBuilder& DeviceBuilder::requestExtensions(const std::vector<const char*>& 
     return *this;
 }
 
-DeviceBuilder& DeviceBuilder::addQueue(VkDeviceQueueCreateInfo queueCreateInfo) {
+DeviceBuilder& DeviceBuilder::addQueue(const VkDeviceQueueCreateInfo queueCreateInfo) {
     this->queueCreateInfos.push_back(queueCreateInfo);
     return *this;
 }
@@ -62,10 +63,11 @@ QueueFamilyIndices DeviceBuilder::build(VkDevice& device) {
 
     check(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device),
           "Failed to create VkDevice.");
+    SLOG_INFO("Successfully created Logical Device.");
     return indices;
 }
 
-void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) {
+void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) const {
     uint32_t extensionCount;
     check(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr),
           "Failed to enumerate Device Extension Properties.");

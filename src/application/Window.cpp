@@ -19,7 +19,7 @@ static void framebufferResizeCallback(GLFWwindow* glfWwindow, int width, int hei
     // auto* callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
 }
 
-Window::Window(int width, int height, std::string appName)
+Window::Window(const int width, const int height, const std::string appName)
     : width(width)
     , height(height)
     , appName(appName) {
@@ -39,18 +39,18 @@ Window::~Window() {
     glfwDestroyWindow(window);
 }
 
-bool Window::shouldClose() {
+bool Window::shouldClose() const {
     return glfwWindowShouldClose(window);
 }
 
-int Window::getWidth() {
+int Window::getWidth() const {
     return width;
 }
 
-int Window::getHeight() {
+int Window::getHeight() const {
     return height;
 }
 
-GLFWwindow* Window::getWindowHandle() {
+GLFWwindow* Window::getWindowHandle() const {
     return this->window;
 }

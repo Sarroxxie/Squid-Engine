@@ -26,7 +26,7 @@ class DeviceBuilder
 
     // NOTE: VkDeviceQueueCreateInfo takes a float* as reference. Make sure that
     // the value it is referencing does not go out of scope until "build()" was called.
-    DeviceBuilder& addQueue(VkDeviceQueueCreateInfo queueCreateInfo);
+    DeviceBuilder& addQueue(const VkDeviceQueueCreateInfo queueCreateInfo);
     // NOTE: VkDeviceQueueCreateInfo takes a float* as reference. Make sure that
     // the value it is referencing does not go out of scope until "build()" was called.
     DeviceBuilder& addQueues(const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos);
@@ -47,9 +47,10 @@ class DeviceBuilder
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     QueueFamilyIndices                   indices;
 
+    // TODO: should this be moved somewhere else?
     const float DEFAULT_QUEUE_PRIORITY = 1.0f;
 
     // Checks if the added extensions are supported by the GPU. Throws an
     // exception if an extension is not supported.
-    void assertExtensionSupport(std::vector<const char*> extensions);
+    void assertExtensionSupport(std::vector<const char*> extensions) const;
 };

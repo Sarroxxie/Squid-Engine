@@ -5,14 +5,12 @@
 #include "setup/DeviceBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
-#include <iostream>
 
 DefaultApplication::DefaultApplication(Window* window) : DefaultApplication(window, false) {}
 
 DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
     : Application::Application(window)
     , USE_DEBUG_UTILS(useDebugUtils) {
-    LOG("from default application");
     try {
         init();
         // To get a working debugMessenger, we need the call to the non-default
@@ -20,7 +18,7 @@ DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
         if(USE_DEBUG_UTILS)
             debugMessenger = DebugUtilsMessenger(instance);
     } catch(std::runtime_error& e) {
-        std::cerr << "UNCAUGHT EXCEPTION: " << e.what() << "\n";
+        SLOG_FATAL(e.what());
         // destroying all previously created resources
         cleanup();
         exit(EXIT_FAILURE);
@@ -95,6 +93,7 @@ void DefaultApplication::createDevice() {
 void DefaultApplication::createSwapchain() {
     swapchainBuilder.setPhysicalDevice(this->physicalDevice);
     swapchainBuilder.setSurface(this->surface);
-    swapchainBuilder.setToTripleBuffering(); // as this returns a bool, can check if it worked (TODO?)
-    swapchainBuilder.build(this->device, &this->swapchain);
+    //swapchainBuilder.setToTripleBuffering(); // as this returns a bool, can check if it worked (TODO?)
+
+    swapchainBuilder.build(this->device, this->swapchain);
 }

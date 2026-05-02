@@ -1,4 +1,6 @@
 #include "InstanceBuilder.h"
+#include "output/VulkanCheck.h"
+#include "output/Logger.h"
 #include <stdexcept>
 
 InstanceBuilder::InstanceBuilder() {
@@ -21,12 +23,14 @@ InstanceBuilder& InstanceBuilder::setAppName(const char* applicationName) {
     return *this;
 }
 
-InstanceBuilder& InstanceBuilder::setAppVersion(uint32_t version) {
+InstanceBuilder& InstanceBuilder::setAppVersion(const uint32_t version) {
     applicationInfo.applicationVersion = version;
     return *this;
 }
 
-InstanceBuilder& InstanceBuilder::setAppVersion(uint32_t major, uint32_t minor, uint32_t patch) {
+InstanceBuilder& InstanceBuilder::setAppVersion(const uint32_t major,
+                                                const uint32_t minor,
+                                                const uint32_t patch) {
     return setAppVersion(VK_MAKE_VERSION(major, minor, patch));
 }
 
@@ -37,21 +41,25 @@ InstanceBuilder& InstanceBuilder::setEngineName(const char* engineName) {
     return *this;
 }
 
-InstanceBuilder& InstanceBuilder::setEngineVersion(uint32_t version) {
+InstanceBuilder& InstanceBuilder::setEngineVersion(const uint32_t version) {
     applicationInfo.engineVersion = version;
     return *this;
 }
 
-InstanceBuilder& InstanceBuilder::setEngineVersion(uint32_t major, uint32_t minor, uint32_t patch) {
+InstanceBuilder& InstanceBuilder::setEngineVersion(const uint32_t major,
+                                                   const uint32_t minor,
+                                                   const uint32_t patch) {
     return setEngineVersion(VK_MAKE_VERSION(major, minor, patch));
 }
 
-InstanceBuilder& InstanceBuilder::setApiVersion(uint32_t version) {
+InstanceBuilder& InstanceBuilder::setApiVersion(const uint32_t version) {
     applicationInfo.apiVersion = version;
     return *this;
 }
 
-InstanceBuilder& InstanceBuilder::setApiVersion(uint32_t variant, uint32_t major, uint32_t minor) {
+InstanceBuilder& InstanceBuilder::setApiVersion(const uint32_t variant,
+                                                const uint32_t major,
+                                                const uint32_t minor) {
     // according to Vulkan the patch number should always be set to 0
     return setApiVersion(VK_MAKE_API_VERSION(variant, major, minor, 0));
 }
@@ -79,18 +87,19 @@ InstanceBuilder& InstanceBuilder::attachDebugMessenger(VkDebugUtilsMessengerCrea
     return *this;
 }
 
-void InstanceBuilder::build(VkInstance& instance) {
-    if(vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create VkInstance.");
-    }
+void InstanceBuilder::build(VkInstance& instance) const {
+    check(vkCreateInstance(&createInfo, nullptr, &instance), "Failed to create VkInstance.");
+    SLOG_INFO("Successfully created Instance.");
 }
 
-void InstanceBuilder::assertLayerSupport(std::vector<const char*> layers) {
+void InstanceBuilder::assertLayerSupport(const std::vector<const char*> layers) const {
     uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+    check(vkEnumerateInstanceLayerProperties(&layerCount, nullptr),
+          "Failed to enumerate Instance Layer Properties.");
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+    check(vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data()),
+          "Failed to enumerate Instance Layer Properties.");
 
     // collect all layers that are not available inside this error message
     std::string errorMessage = "";
@@ -117,13 +126,15 @@ void InstanceBuilder::assertLayerSupport(std::vector<const char*> layers) {
     }
 }
 
-void InstanceBuilder::assertExtensionSupport(std::vector<const char*> extensions) {
+void InstanceBuilder::assertExtensionSupport(const std::vector<const char*> extensions) const {
     uint32_t extensionCount;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr),
+          "Failed to enumerate Instance Extension Properties.");
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
-                                           availableExtensions.data());
+    check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
+                                                 availableExtensions.data()),
+          "Failed to enumerate Instance Extension Properties.");
 
     // collect all extensions that are not available inside this error message
     std::string errorMessage;

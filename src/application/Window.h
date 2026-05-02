@@ -17,14 +17,14 @@ This class handles window creation and destruction. As long as the
 class Window
 {
   public:
-    Window(int width, int height, std::string application_name);
+    Window(const int width, const int height, const std::string application_name);
     ~Window();
     // Wrapper for "glfwWindowShouldClose(..)".
-    bool shouldClose();
+    bool shouldClose() const;
 
-    int         getWidth();
-    int         getHeight();
-    GLFWwindow* getWindowHandle();
+    int         getWidth() const;
+    int         getHeight() const;
+    GLFWwindow* getWindowHandle() const;
 
   private:
     int         width;

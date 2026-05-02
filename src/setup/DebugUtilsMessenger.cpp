@@ -1,8 +1,7 @@
 #include "DebugUtilsMessenger.h"
 
 #include "output/VulkanCheck.h"
-#include <iostream>
-#include <stdexcept>
+#include "output/Logger.h"
 
 // This method handles all the messages that get passed to the CPU from the Validation Layers.
 static VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -11,10 +10,9 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
               const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
               void*                                       userData) {
 
-    //TODO: should also handle this via the logger (and also give a hint to the message severity)
-    //      -> also print message severity
+    //TODO: should map message severity to logger macro
     //      -> also print message type
-    std::cerr << "VALIDATION LAYER: " << callbackData->pMessage << std::endl;
+    SLOG_INFO("VL: " << callbackData->pMessage);
 
     return VK_FALSE;
 }
@@ -50,10 +48,12 @@ DebugUtilsMessenger::DebugUtilsMessenger(VkInstance& instance) {
 
     check(createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger),
           "Failed to create Debug Utils Messenger.");
+    SLOG_INFO("Successfully created Debug Utils Messenger.");
 }
 
 void DebugUtilsMessenger::cleanup(VkInstance& instance) {
     destroyDebugUtilsMessengerEXT(instance, vkDebugMessenger, nullptr);
+    SLOG_INFO("Cleaned up Debug Utils Messenger.");
 }
 
 void DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {

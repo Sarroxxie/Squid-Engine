@@ -8,10 +8,6 @@
 #include "application/Window.h"
 #include "application/DefaultApplication.h"
 
-#include "output/Logger.h"
-
-#define ENABLE_LOGGING
-
 constexpr int WIDTH = 1280;
 constexpr int HEIGHT = 720;
 constexpr char APP_NAME[] = "Squid Engine";
@@ -28,8 +24,6 @@ int main() {
      * 
      * -> also split application and rendering! application should handle inputs (and physics?)
      */
-
-    LOG("this is a message");
 
     Window window(WIDTH, HEIGHT, APP_NAME);
 

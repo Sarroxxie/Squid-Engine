@@ -15,25 +15,25 @@ class InstanceBuilder
 
     // Sets the version of the application. Version should be constructed with
     // VK_MAKE_VERSION. Default version is 1.0.0.
-    InstanceBuilder& setAppVersion(uint32_t version);
+    InstanceBuilder& setAppVersion(const uint32_t version);
     // Sets the version of the application. Default version is 1.0.0.
-    InstanceBuilder& setAppVersion(uint32_t major, uint32_t minor, uint32_t patch);
+    InstanceBuilder& setAppVersion(const uint32_t major, const uint32_t minor, const uint32_t patch);
 
     // Sets the name of the engine. Default name is "Engine" if no name is provided.
     InstanceBuilder& setEngineName(const char* engineName);
 
     // Sets the version of the engine. Version should be constructed with
     // VK_MAKE_VERSION. Default version is 1.0.0.
-    InstanceBuilder& setEngineVersion(uint32_t version);
+    InstanceBuilder& setEngineVersion(const uint32_t version);
     // Sets the version of the engine. Default version is 1.0.0.
-    InstanceBuilder& setEngineVersion(uint32_t major, uint32_t minor, uint32_t patch);
+    InstanceBuilder& setEngineVersion(const uint32_t major, const uint32_t minor, const uint32_t patch);
 
     // Sets the version of the Vulkan API. Version should be constructed with
     // VK_MAKE_API_VERSION. Default version is 0.1.3.
-    InstanceBuilder& setApiVersion(uint32_t version);
+    InstanceBuilder& setApiVersion(const uint32_t version);
 
     // Sets the version of the Vulkan API. Default version is 0.1.3.
-    InstanceBuilder& setApiVersion(uint32_t variant, uint32_t major, uint32_t minor);
+    InstanceBuilder& setApiVersion(const uint32_t variant, const uint32_t major, const uint32_t minor);
 
     // Requests layers for the instance. Throws an exception if at least one of the Layers is not available.
     InstanceBuilder& requestLayers(const std::vector<const char*>& layers);
@@ -46,7 +46,7 @@ class InstanceBuilder
     InstanceBuilder& attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo);
 
     // Creates a VkInstance. Throws an exception when creation failed.
-    void build(VkInstance& instance);
+    void build(VkInstance& instance) const;
 
   private:
     VkApplicationInfo    applicationInfo;
@@ -54,9 +54,9 @@ class InstanceBuilder
 
     // Checks if the added layers are supported by the GPU. Throws an
     // exception if an extension is not supported.
-    void assertLayerSupport(std::vector<const char*> layers);
+    void assertLayerSupport(const std::vector<const char*> layers) const;
 
     // Checks if the added extensions are supported by the GPU. Throws an
     // exception if an extension is not supported.
-    void assertExtensionSupport(std::vector<const char*> extensions);
+    void assertExtensionSupport(const std::vector<const char*> extensions) const;
 };

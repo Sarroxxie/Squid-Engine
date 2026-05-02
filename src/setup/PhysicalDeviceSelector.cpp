@@ -2,11 +2,11 @@
 
 #include "QueueFamiliyIndices.h"
 #include "output/VulkanCheck.h"
+#include "output/Logger.h"
 #include <vector>
-#include <iostream>
 
-VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& instance,
-                                                               const VkSurfaceKHR& surface) {
+const VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(const VkInstance& instance,
+                                                                     const VkSurfaceKHR& surface) const {
     VkPhysicalDevice physicalDevice      = VK_NULL_HANDLE;
     int              physicalDeviceScore = -1;
     uint32_t         deviceCount         = 0;
@@ -22,7 +22,7 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     for(const auto& device : devices) {
         int currentScore = rateDeviceSuitability(device, surface);
         if(currentScore > physicalDeviceScore) {
-            physicalDevice = device;
+            physicalDevice      = device;
             physicalDeviceScore = currentScore;
         }
     }
@@ -32,12 +32,13 @@ VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(VkInstance& insta
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
     // TODO: should use a logger here!
-    std::cout << "Using Physical Device \"" << deviceProperties.deviceName << "\"\n";
+    SLOG_INFO("Using Physical Device \"" << deviceProperties.deviceName << "\"");
 
     return physicalDevice;
 }
 
-int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device, const VkSurfaceKHR& surface) {
+int PhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice& device,
+                                                  const VkSurfaceKHR& surface) const {
     int score = 0;
 
     // these queue families are required
