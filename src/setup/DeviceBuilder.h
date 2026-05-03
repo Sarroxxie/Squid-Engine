@@ -17,8 +17,11 @@ class DeviceBuilder
     // Sets flags for device creation.
     DeviceBuilder& setFlags(const VkDeviceCreateFlags flags);
 
-    // Sets features for device creation.
+    // Sets features for device creation. (legacy, use for Vulkan 1.0)
     DeviceBuilder& setFeatures(const VkPhysicalDeviceFeatures& features);
+
+    // Sets features for device creation. (use this for Vulkan 1.1 and higher)
+    DeviceBuilder& setFeatures(const VkPhysicalDeviceFeatures2& features);
 
     // Requests extensions for the device. Throws an exception if at least one
     // of the Extensions is not available.
@@ -41,9 +44,9 @@ class DeviceBuilder
     QueueFamilyIndices build(VkDevice& device);
 
   private:
-    const VkPhysicalDevice               physicalDevice;
-    const VkSurfaceKHR                   surface;
-    VkDeviceCreateInfo                   deviceCreateInfo;
+    const VkPhysicalDevice physicalDevice;
+    const VkSurfaceKHR     surface;
+    VkDeviceCreateInfo deviceCreateInfo{.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     QueueFamilyIndices                   indices;
 

@@ -9,7 +9,7 @@ Wrapper for creation of a VkInstance.
 class InstanceBuilder
 {
   public:
-    InstanceBuilder();
+    InstanceBuilder() {};
     // Sets the name of the application. Default name is "Application" if no name is provided.
     InstanceBuilder& setAppName(const char* applicationName);
 
@@ -49,8 +49,16 @@ class InstanceBuilder
     void build(VkInstance& instance) const;
 
   private:
-    VkApplicationInfo    applicationInfo;
-    VkInstanceCreateInfo createInfo;
+    VkApplicationInfo applicationInfo{.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+                                      .pApplicationName = "Application",
+                                      .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+                                      .pEngineName   = "Engine",
+                                      .engineVersion = VK_MAKE_VERSION(1, 0, 0),
+                                      .apiVersion    = VK_API_VERSION_1_3};
+
+    VkInstanceCreateInfo createInfo{.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+                                    .pApplicationInfo = &applicationInfo};
+
 
     // Checks if the added layers are supported by the GPU. Throws an
     // exception if an extension is not supported.

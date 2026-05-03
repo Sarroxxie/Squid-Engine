@@ -14,8 +14,6 @@ DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& sur
     // go out of scope until "build()" was called.
     queueCreateInfos =
         QueueFamilyUtils::toQueueCreateInfos(indices, &DEFAULT_QUEUE_PRIORITY);
-
-    deviceCreateInfo = VkDeviceCreateInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 }
 
 DeviceBuilder& DeviceBuilder::setFlags(const VkDeviceCreateFlags flags) {
@@ -25,6 +23,11 @@ DeviceBuilder& DeviceBuilder::setFlags(const VkDeviceCreateFlags flags) {
 
 DeviceBuilder& DeviceBuilder::setFeatures(const VkPhysicalDeviceFeatures& features) {
     deviceCreateInfo.pEnabledFeatures = &features;
+    return *this;
+}
+
+DeviceBuilder& DeviceBuilder::setFeatures(const VkPhysicalDeviceFeatures2& features) {
+    deviceCreateInfo.pNext = &features;
     return *this;
 }
 

@@ -85,6 +85,8 @@ void DefaultApplication::createDevice() {
     const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     QueueFamilyIndices indices;
     builder.requestExtensions(extensions);
+    // TODO: may want to specify features here that we will be using
+
     indices = builder.build(device);
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);

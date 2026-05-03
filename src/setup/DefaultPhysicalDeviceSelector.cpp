@@ -7,12 +7,12 @@ int DefaultPhysicalDeviceSelector::rateDeviceSuitability(const VkPhysicalDevice&
     if(score < 0)
         return -1;
 
-    VkPhysicalDeviceProperties deviceProperties;
-    vkGetPhysicalDeviceProperties(device, &deviceProperties);
-    VkPhysicalDeviceFeatures deviceFeatures;
-    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+    VkPhysicalDeviceProperties2 deviceProperties;
+    vkGetPhysicalDeviceProperties2(device, &deviceProperties);
+    VkPhysicalDeviceFeatures2 deviceFeatures;
+    vkGetPhysicalDeviceFeatures2(device, &deviceFeatures);
 
-    if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+    if(deviceProperties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
         score += 100;
     }
 

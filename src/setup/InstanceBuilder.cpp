@@ -3,18 +3,6 @@
 #include "output/Logger.h"
 #include <stdexcept>
 
-InstanceBuilder::InstanceBuilder() {
-    // default data for instance creation
-    applicationInfo = VkApplicationInfo{VK_STRUCTURE_TYPE_APPLICATION_INFO};
-    applicationInfo.pApplicationName   = "Application";
-    applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    applicationInfo.pEngineName        = "Engine";
-    applicationInfo.engineVersion      = VK_MAKE_VERSION(1, 0, 0);
-    applicationInfo.apiVersion         = VK_API_VERSION_1_3;
-
-    createInfo = VkInstanceCreateInfo{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
-    createInfo.pApplicationInfo = &applicationInfo;
-}
 
 InstanceBuilder& InstanceBuilder::setAppName(const char* applicationName) {
     if(!applicationName)
