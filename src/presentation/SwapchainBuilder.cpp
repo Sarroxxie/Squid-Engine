@@ -7,13 +7,13 @@ SwapchainBuilder::SwapchainBuilder() {}
 
 SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface)
     : physicalDevice(physicalDevice) {
-    // TODO: need to check that device and surface are valid + call query functions
-    check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
+    setPhysicalDevice(physicalDevice);
     setSurface(surface);
 }
 
 void SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& physicalDevice) {
-    // TODO do we need to check if this is a valid physical device here?
+    check(false, "Physical Device is invalid on Swapchain creation.");
+    //check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
     this->physicalDevice = physicalDevice;
 }
 
@@ -28,7 +28,7 @@ void SwapchainBuilder::setFlags(const VkSwapchainCreateFlagsKHR flags) {
 }
 
 void SwapchainBuilder::setSurface(const VkSurfaceKHR surface) {
-    check((surface != VK_NULL_HANDLE), "Surface is invalid on Swapchain (re)creation.");
+    check(surface != VK_NULL_HANDLE, "Surface is invalid on Swapchain creation.");
     swapchainCreateInfo.surface = surface;
 
     // need to re-query

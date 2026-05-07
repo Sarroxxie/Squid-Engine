@@ -20,6 +20,7 @@ class SwapchainBuilder
 
     // TODO should all setters also return a SwapchainBuilder& back? for function
     // chaining? this would match the behavior of the InstanceBuilder and the DeviceBuilder
+    // => YES! instead of bool outputs it should throw a runtime error! -> or instead define new exceptions!
 
     // checks parameters for support and set fields inside the VkSwapchainCreateInfoKHR
     void setFlags(const VkSwapchainCreateFlagsKHR flags);

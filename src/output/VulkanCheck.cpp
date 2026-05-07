@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+// TODO: need to give option to pass a custom exception class!
+
 void check(const VkResult result) {
     if(result != VK_SUCCESS)
         throw std::runtime_error("Vulkan call returned an error.\n");
