@@ -14,7 +14,7 @@ class SwapchainBuilder
   public:
     SwapchainBuilder();
     SwapchainBuilder(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface);
-    void setPhysicalDevice(const VkPhysicalDevice& physicalDevice);
+    SwapchainBuilder& setPhysicalDevice(const VkPhysicalDevice& physicalDevice);
     // TODO: documentation! -> needs valid physical device and surface
     void build(const VkDevice& device, VkSwapchainKHR& swapchain) const;
 
@@ -23,20 +23,20 @@ class SwapchainBuilder
     // => YES! instead of bool outputs it should throw a runtime error! -> or instead define new exceptions!
 
     // checks parameters for support and set fields inside the VkSwapchainCreateInfoKHR
-    void setFlags(const VkSwapchainCreateFlagsKHR flags);
-    void setSurface(const VkSurfaceKHR surface);
+    SwapchainBuilder& setFlags(const VkSwapchainCreateFlagsKHR flags);
+    SwapchainBuilder& setSurface(const VkSurfaceKHR surface);
     bool setMinImageCount(const uint32_t minImageCount);
     bool setSurfaceFormat(const VkSurfaceFormatKHR surfaceFormat);
     bool setImageExtent(const VkExtent2D imageExtent);
     bool setImageArrayLayers(const uint32_t imageArrayLayers);
     bool setImageUsage(const VkImageUsageFlags imageUsage);
-    void setImageSharingMode(const VkSharingMode imageSharingMode);
-    void setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices);
+    SwapchainBuilder& setImageSharingMode(const VkSharingMode imageSharingMode);
+    SwapchainBuilder& setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices);
     bool setPreTransform(const VkSurfaceTransformFlagBitsKHR preTransform);
     bool setCompositeAlpha(const VkCompositeAlphaFlagBitsKHR compositeAlpha);
     bool setPresentMode(const VkPresentModeKHR presentMode);
-    void setClipped(const VkBool32 clipped);
-    void setOldSwapchain(const VkSwapchainKHR oldSwapchain);
+    SwapchainBuilder& setClipped(const VkBool32 clipped);
+    SwapchainBuilder& setOldSwapchain(const VkSwapchainKHR oldSwapchain);
 
     bool setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo);
 

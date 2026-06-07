@@ -19,7 +19,9 @@ class Window
   public:
     Window(const int width, const int height, const std::string application_name);
     ~Window();
-    // Wrapper for "glfwWindowShouldClose(..)".
+    /*
+    Wrapper for "glfwWindowShouldClose(..)".
+    */
     bool shouldClose() const;
 
     int         getWidth() const;

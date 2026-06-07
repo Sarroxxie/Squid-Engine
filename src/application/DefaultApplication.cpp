@@ -72,6 +72,7 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
 
 void DefaultApplication::createSurface() {
     check(glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface), "Window Surface creation failed.");
+    SLOG_INFO("Successfully created Surface.");
 }
 
 void DefaultApplication::selectPhysicalDevice() {

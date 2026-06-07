@@ -20,19 +20,25 @@ struct QueueFamilyIndices
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
 
-    // Checks if all the indices are set.
+    /*
+    Checks if all the indices are set.
+    */
     bool isComplete() const;
 };
 
 namespace QueueFamilyUtils {
 
-// Attempts to find the queue family indices to a queue family that supports the
-// families listed in the struct "QueueFamilyIndices". If you want to see if
-// they are supported, call "isComplete()" on the return value.
+/*
+Attempts to find the queue family indices to a queue family that supports the
+families listed in the struct "QueueFamilyIndices". If you want to see if
+they are supported, call "isComplete()" on the return value.
+*/
 QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& physicalDevice,
                                      const VkSurfaceKHR&     surface);
 
-// Simplifies the process of creating QueueCreateInfos for the indices from QueueFamilyIndices.
+/*
+Simplifies the process of creating QueueCreateInfos for the indices from QueueFamilyIndices.
+*/
 std::vector<VkDeviceQueueCreateInfo> toQueueCreateInfos(QueueFamilyIndices& indices,
                                                         const float* const queuePriority);
 

@@ -12,10 +12,14 @@ class Application
 {
   public:
     Application(Window* const window);
-    // Initializes the application by calling all the pure virtual functions in the correct order.
+    /*
+    Initializes the application by calling all the pure virtual functions in the correct order.
+    */
     virtual void init() final;
     VkInstance&  getInstance();
-    // Destroys all used resources.
+    /*
+    Destroys all used resources.
+    */
     void cleanup();
 
   protected:
@@ -31,19 +35,29 @@ class Application
     VkQueue presentQueue  = VK_NULL_HANDLE;
 
   private:
-    // Creates the VkInstance. After the execution of this function, a valid
-    // VkInstance must be stored in the variable "instance".
+    /*
+    Creates the VkInstance. After the execution of this function, a valid
+    VkInstance must be stored in the variable "instance".
+    */
     virtual void createInstance() = 0;
-    // Creates the Window Surface. After the execution of this function, a valid
-    // VkSurfaceKHR must be stored in the variable "surface".
+    /*
+    Creates the Window Surface. After the execution of this function, a valid
+    VkSurfaceKHR must be stored in the variable "surface".
+    */
     virtual void createSurface() = 0;
-    // Selects the Physical Device. After the execution of this function, a
-    // valid VkPhysicalDevice must be stored in the variable "physicalDevice".
+    /*
+    Selects the Physical Device. After the execution of this function, a
+    valid VkPhysicalDevice must be stored in the variable "physicalDevice".
+    */
     virtual void selectPhysicalDevice() = 0;
-    // Creates the (logical) Device. After the execution of this function, a
-    // valid VkDevice must be stored in the variable "device".
+    /*
+    Creates the (logical) Device. After the execution of this function, a
+    valid VkDevice must be stored in the variable "device".
+    */
     virtual void createDevice() = 0;
-    // Creates the Swapchain. After the execution of this function, a valid
-    // VkSwapchainKHR must be stored in the variable "swapchain".
+    /*
+    Creates the Swapchain. After the execution of this function, a valid
+    VkSwapchainKHR must be stored in the variable "swapchain".
+    */
     virtual void createSwapchain() = 0;
 };

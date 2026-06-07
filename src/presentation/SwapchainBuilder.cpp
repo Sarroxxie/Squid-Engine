@@ -11,33 +11,41 @@ SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice, const
     setSurface(surface);
 }
 
-void SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& physicalDevice) {
-    check(false, "Physical Device is invalid on Swapchain creation.");
-    //check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
+SwapchainBuilder& SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& physicalDevice) {
+    check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
     this->physicalDevice = physicalDevice;
+    return *this;
 }
 
 void SwapchainBuilder::build(const VkDevice& device, VkSwapchainKHR& swapchain) const {
+    // TODO move all checks into this function! else every single setter would
+    // have to be surrounded by try/catch
+
+    check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
+    check(swapchainCreateInfo.surface != VK_NULL_HANDLE,
+          "Surface is invalid on Swapchain creation.");
     check(vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain),
           "Failed to create Swapchain.");
     SLOG_INFO("Successfully created Swapchain.");
 }
 
-void SwapchainBuilder::setFlags(const VkSwapchainCreateFlagsKHR flags) {
+SwapchainBuilder& SwapchainBuilder::setFlags(const VkSwapchainCreateFlagsKHR flags) {
     swapchainCreateInfo.flags = flags;
+    return *this;
 }
 
-void SwapchainBuilder::setSurface(const VkSurfaceKHR surface) {
+SwapchainBuilder& SwapchainBuilder::setSurface(const VkSurfaceKHR surface) {
     check(surface != VK_NULL_HANDLE, "Surface is invalid on Swapchain creation.");
     swapchainCreateInfo.surface = surface;
 
-    // need to re-query
+    // need to (re-)query
     querySurfaceCapabilities();
     querySurfaceFormats();
     querySurfacePresentModes();
     // TODO: need to check ALL the createInfo for support again here!
     setMinImageCount(surfaceCapabilities.minImageCount);
     setImageExtent(surfaceCapabilities.currentExtent);
+    return *this;
 }
 
 bool SwapchainBuilder::setMinImageCount(const uint32_t minImageCount) {
@@ -76,15 +84,17 @@ bool SwapchainBuilder::setImageUsage(const VkImageUsageFlags imageUsage) {
     return true;
 }
 
-void SwapchainBuilder::setImageSharingMode(const VkSharingMode imageSharingMode) {
+SwapchainBuilder& SwapchainBuilder::setImageSharingMode(const VkSharingMode imageSharingMode) {
     swapchainCreateInfo.imageSharingMode = imageSharingMode;
+    return *this;
 }
 
 // TODO: check if we should instead copy the data and store it inside the
 // swapchain builder to avoid it going out of scope
-void SwapchainBuilder::setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices) {
+SwapchainBuilder& SwapchainBuilder::setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices) {
     swapchainCreateInfo.queueFamilyIndexCount = queueFamilyIndices.size();
     swapchainCreateInfo.pQueueFamilyIndices   = queueFamilyIndices.data();
+    return *this;
 }
 
 bool SwapchainBuilder::setPreTransform(const VkSurfaceTransformFlagBitsKHR preTransform) {
@@ -110,12 +120,14 @@ bool SwapchainBuilder::setPresentMode(const VkPresentModeKHR presentMode) {
     return true;
 }
 
-void SwapchainBuilder::setClipped(const VkBool32 clipped) {
+SwapchainBuilder& SwapchainBuilder::setClipped(const VkBool32 clipped) {
     swapchainCreateInfo.clipped = clipped;
+    return *this;
 }
 
-void SwapchainBuilder::setOldSwapchain(const VkSwapchainKHR oldSwapchain) {
+SwapchainBuilder& SwapchainBuilder::setOldSwapchain(const VkSwapchainKHR oldSwapchain) {
     swapchainCreateInfo.oldSwapchain = oldSwapchain;
+    return *this;
 }
 
 bool SwapchainBuilder::setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo) {
