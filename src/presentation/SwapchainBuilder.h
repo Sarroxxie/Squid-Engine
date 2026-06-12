@@ -77,8 +77,6 @@ class SwapchainBuilder
     SwapchainBuilder& setToTripleBuffering(bool& success);
     SwapchainBuilder& setToTripleBuffering();
 
-    // TODO: do we need getters to get the current values?
-
   private:
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 

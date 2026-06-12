@@ -96,7 +96,7 @@ void DefaultApplication::createDevice() {
 void DefaultApplication::createSwapchain() {
     swapchainBuilder.setPhysicalDevice(this->physicalDevice);
     swapchainBuilder.setSurface(this->surface);
-    //swapchainBuilder.setToTripleBuffering(); // as this returns a bool, can check if it worked (TODO?)
+    swapchainBuilder.setToTripleBuffering();
 
     swapchainBuilder.build(this->device, this->swapchain);
 }

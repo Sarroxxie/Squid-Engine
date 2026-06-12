@@ -284,10 +284,6 @@ SwapchainBuilder& SwapchainBuilder::setOldSwapchain(const VkSwapchainKHR oldSwap
 }
 
 SwapchainBuilder& SwapchainBuilder::enableVsyncPresentMode(bool& success) {
-    // TODO: test what happens if FIFO is active and minImageCount = 1! ->
-    // concern is naming here: vsync requires more than 1 image at a time but the
-    // double buffering function requires the present mode to be set correctly
-
     if(swapchainCreateInfo.presentMode != VK_PRESENT_MODE_FIFO_KHR
        && swapchainCreateInfo.presentMode != VK_PRESENT_MODE_MAILBOX_KHR
        && swapchainCreateInfo.presentMode != VK_PRESENT_MODE_FIFO_RELAXED_KHR
@@ -396,8 +392,7 @@ bool SwapchainBuilder::checkMinImageCountSupport(uint32_t minImageCount) const {
     return true;
 }
 
-// TODO: should this be here in the code? we need this to iterate over the
-// supported surface formats and compare if a requested format is supported
+// needed to check if a requested surface matches with a supported surface
 bool operator==(const VkSurfaceFormatKHR& lhs, const VkSurfaceFormatKHR& rhs) {
     if(lhs.format == rhs.format && lhs.colorSpace == rhs.colorSpace)
         return true;
