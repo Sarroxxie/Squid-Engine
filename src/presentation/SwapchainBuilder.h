@@ -12,26 +12,26 @@
 class SwapchainBuilder
 {
   public:
-    // TODO: decide on a better ordering of functions here -> build first, then physicalDevice + surface, then rest
-    // TODO: implement the function variant that do not take a "bool& success" as parameter
-
     SwapchainBuilder();
     SwapchainBuilder(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface);
-    // may throw exception
-    SwapchainBuilder& setPhysicalDevice(const VkPhysicalDevice& physicalDevice);
+
     // TODO: documentation! -> needs valid physical device and surface
     void build(const VkDevice& device, VkSwapchainKHR& swapchain) const;
 
-    // TODO should all setters also return a SwapchainBuilder& back? for function
-    // chaining? this would match the behavior of the InstanceBuilder and the DeviceBuilder
-    // => YES! instead of bool outputs it should throw a runtime error! -> or instead define new exceptions!
+    // may throw exception
+    SwapchainBuilder& setPhysicalDevice(const VkPhysicalDevice& physicalDevice, bool& success);
+    SwapchainBuilder& setPhysicalDevice(const VkPhysicalDevice& physicalDevice);
 
-    // idea: make it optional to get feedback if things worked -> optional "bool& success" -> two versions of functions
+    // may throw exception
+    SwapchainBuilder& setSurface(const VkSurfaceKHR surface, bool& success);
+    SwapchainBuilder& setSurface(const VkSurfaceKHR surface);
+
+    SwapchainBuilder& setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo,
+                                             bool& success);
+    SwapchainBuilder& setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo);
 
     // checks parameters for support and set fields inside the VkSwapchainCreateInfoKHR
     SwapchainBuilder& setFlags(const VkSwapchainCreateFlagsKHR flags);
-    // may throw exception
-    SwapchainBuilder& setSurface(const VkSurfaceKHR surface);
 
     SwapchainBuilder& setMinImageCount(const uint32_t minImageCount, bool& success);
     SwapchainBuilder& setMinImageCount(const uint32_t minImageCount);
@@ -49,26 +49,24 @@ class SwapchainBuilder
     SwapchainBuilder& setImageUsage(const VkImageUsageFlags imageUsage);
 
     SwapchainBuilder& setImageSharingMode(const VkSharingMode imageSharingMode);
-    SwapchainBuilder& setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices);
 
+    SwapchainBuilder& setQueueFamilyIndices(const std::vector<uint32_t> queueFamilyIndices);
 
     SwapchainBuilder& setPreTransform(const VkSurfaceTransformFlagBitsKHR preTransform,
                                       bool& success);
     SwapchainBuilder& setPreTransform(const VkSurfaceTransformFlagBitsKHR preTransform);
 
 
-    SwapchainBuilder& setCompositeAlpha(const VkCompositeAlphaFlagBitsKHR compositeAlpha, bool& success);
+    SwapchainBuilder& setCompositeAlpha(const VkCompositeAlphaFlagBitsKHR compositeAlpha,
+                                        bool& success);
     SwapchainBuilder& setCompositeAlpha(const VkCompositeAlphaFlagBitsKHR compositeAlpha);
 
     SwapchainBuilder& setPresentMode(const VkPresentModeKHR presentMode, bool& success);
     SwapchainBuilder& setPresentMode(const VkPresentModeKHR presentMode);
 
     SwapchainBuilder& setClipped(const VkBool32 clipped);
-    SwapchainBuilder& setOldSwapchain(const VkSwapchainKHR oldSwapchain);
 
-    // may throw exception
-    SwapchainBuilder& setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo, bool& success);
-    SwapchainBuilder& setSwapchainCreateInfo(const VkSwapchainCreateInfoKHR swapchainCreateInfo);
+    SwapchainBuilder& setOldSwapchain(const VkSwapchainKHR oldSwapchain);
 
     SwapchainBuilder& enableVsyncPresentMode(bool& success);
     SwapchainBuilder& enableVsyncPresentMode();
@@ -97,7 +95,10 @@ class SwapchainBuilder
         .presentMode      = VK_PRESENT_MODE_FIFO_KHR,
         .clipped          = VK_FALSE};
 
-    // TODO: -> need to check support on surface change
+    // need to buffer this to avoid them going out of scope before "build" has been called
+    std::vector<uint32_t> queueFamilyIndices;
+
+    // these only get calculated once on surface change and then stored for performance reasons
     VkSurfaceCapabilitiesKHR        surfaceCapabilities;
     std::vector<VkSurfaceFormatKHR> surfaceFormats;
     std::vector<VkPresentModeKHR>   surfacePresentModes;
@@ -107,7 +108,7 @@ class SwapchainBuilder
     void querySurfaceFormats();
     void querySurfacePresentModes();
 
-    // TODO: checks if the content of the create info is supported
+    // TODO: needs documentation!
     bool checkCreateInfoSupport() const;
     bool checkMinImageCountSupport(uint32_t minImageCount) const;
     bool checkSurfaceFormatSupport(VkSurfaceFormatKHR imageFormat) const;

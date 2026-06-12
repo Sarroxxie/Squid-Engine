@@ -11,9 +11,7 @@
 #define ENABLE_LOGGING_FATAL
 
 
-// TODO: this file should contain a macro for logging things
-
-// S-LOG meaning Simple-LOG
+// S-LOG meaning Simple-LOG (or Squid-LOG)
 #ifdef ENABLE_LOGGING_VERBOSE
 #define SLOG_VERBOSE(msg) std::cerr << "[VERBOSE]  " << msg << "\n"
 #else
