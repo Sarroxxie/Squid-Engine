@@ -6,8 +6,8 @@
 #include <vector>
 
 /*
- This class serves as a default implementation for the abstract class
- "Application". Take it as a guide on how to implement your own Application.
+This class serves as a default implementation for the abstract class
+"Application". Take it as a guide on how to implement your own Application.
  */
 class DefaultApplication : public Application
 {

@@ -2,12 +2,12 @@
 
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include <algorithm>
 
 SwapchainBuilder::SwapchainBuilder() {}
 
 SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice,
-                                   const VkSurfaceKHR&     surface)
-    : physicalDevice(physicalDevice) {
+                                   const VkSurfaceKHR&     surface) {
     setPhysicalDevice(physicalDevice);
     setSurface(surface);
 }
@@ -16,6 +16,8 @@ void SwapchainBuilder::build(const VkDevice& device, VkSwapchainKHR& swapchain) 
     check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
     check(swapchainCreateInfo.surface != VK_NULL_HANDLE,
           "Surface is invalid on Swapchain creation.");
+    check(device != VK_NULL_HANDLE, "Device is invalid on Swapchain creation.");
+
     check(vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain),
           "Failed to create Swapchain.");
     SLOG_INFO("Successfully created Swapchain.");
@@ -26,8 +28,26 @@ SwapchainBuilder& SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& ph
     success = physicalDevice != VK_NULL_HANDLE;
     if(success) {
         this->physicalDevice = physicalDevice;
+        // for querying we need a valid surface
+        if(swapchainCreateInfo.surface != VK_NULL_HANDLE) {
+            // need to (re-)query
+            querySurfaceCapabilities();
+            querySurfaceFormats();
+            querySurfacePresentModes();
+
+            // adjust settings to newly queried capabilities
+            setImageExtent(surfaceCapabilities.currentExtent);
+            if(swapchainCreateInfo.minImageCount < surfaceCapabilities.minImageCount)
+                setMinImageCount(surfaceCapabilities.minImageCount);
+
+            bool isSupportComplete = checkCreateInfoSupport();
+            if(!isSupportComplete) {
+                SLOG_WARNING("Current settings are not compatible with new Physical Device. Reverting to default settings.");
+                setToDefaultSettings();
+            }
+        }
     } else {
-        SLOG_WARNING("Attempted to set Physical Device to a NULL object on Swapchain creation.");
+        SLOG_WARNING("Attempted to set Physical Device to a NULL object on Swapchain creation. Reverting to previously used Physical Device");
     }
     return *this;
 }
@@ -40,33 +60,24 @@ SwapchainBuilder& SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& ph
 SwapchainBuilder& SwapchainBuilder::setSurface(const VkSurfaceKHR surface, bool& success) {
     success = surface != VK_NULL_HANDLE;
     if(success) {
-        // need to store these to be able to revert back to the old state
-        VkSwapchainCreateInfoKHR oldSwapchainCreateInfo = swapchainCreateInfo;
-        VkSurfaceCapabilitiesKHR oldSurfaceCapabilities = surfaceCapabilities;
-        std::vector<VkSurfaceFormatKHR> oldSurfaceFormats =
-            std::vector<VkSurfaceFormatKHR>(surfaceFormats);
-        std::vector<VkPresentModeKHR> oldSurfacePresentModes =
-            std::vector<VkPresentModeKHR>(surfacePresentModes);
-
         swapchainCreateInfo.surface = surface;
+        // for querying we need a valid physical device
+        if(physicalDevice != VK_NULL_HANDLE) {
+            // need to (re-)query
+            querySurfaceCapabilities();
+            querySurfaceFormats();
+            querySurfacePresentModes();
 
-        // need to (re-)query
-        querySurfaceCapabilities();
-        querySurfaceFormats();
-        querySurfacePresentModes();
+            // adjust settings to newly queried capabilities
+            setImageExtent(surfaceCapabilities.currentExtent);
+            if(swapchainCreateInfo.minImageCount < surfaceCapabilities.minImageCount)
+                setMinImageCount(surfaceCapabilities.minImageCount);
 
-        // adjust parameters to new surface
-        setImageExtent(surfaceCapabilities.currentExtent);
-        if(swapchainCreateInfo.minImageCount < surfaceCapabilities.minImageCount)
-            setMinImageCount(surfaceCapabilities.minImageCount);
-
-        success = checkCreateInfoSupport();
-        if(!success) {
-            SLOG_WARNING("Attempted to set Surface but it does not support requested features. Reverting to previously used surface.");
-            swapchainCreateInfo = oldSwapchainCreateInfo;
-            surfaceCapabilities = oldSurfaceCapabilities;
-            surfaceFormats      = oldSurfaceFormats;
-            surfacePresentModes = oldSurfacePresentModes;
+            bool isSupportComplete = checkCreateInfoSupport();
+            if(!isSupportComplete) {
+                SLOG_WARNING("Attempted to set Surface but it does not support requested features. Reverting to default settings.");
+                setToDefaultSettings();
+            }
         }
     } else {
         SLOG_WARNING("Attempted to set Surface to a NULL object on Swapchain creation. Reverting to previously used surface.");
@@ -83,52 +94,46 @@ SwapchainBuilder& SwapchainBuilder::setSwapchainCreateInfo(const VkSwapchainCrea
                                                            bool& success) {
     success = swapchainCreateInfo.surface != VK_NULL_HANDLE;
     if(success) {
-        // need to store this to be able to revert back to the old state
-        VkSwapchainCreateInfoKHR oldSwapchainCreateInfo = swapchainCreateInfo;
-
-        bool didSurfaceChange =
-            this->swapchainCreateInfo.surface != swapchainCreateInfo.surface;
-
-        std::vector<uint32_t> oldQueueFamilyIndices =
-            std::vector<uint32_t>(queueFamilyIndices);
-        VkSurfaceCapabilitiesKHR        oldSurfaceCapabilities;
-        std::vector<VkSurfaceFormatKHR> oldSurfaceFormats;
-        std::vector<VkPresentModeKHR>   oldSurfacePresentModes;
-
-        this->swapchainCreateInfo = swapchainCreateInfo;
-        // copy queueFamiliyIndices to avoid them going out of scope until "build" has been called
-        this->queueFamilyIndices =
-            std::vector<uint32_t>(swapchainCreateInfo.pQueueFamilyIndices,
-                                  swapchainCreateInfo.pQueueFamilyIndices
-                                      + swapchainCreateInfo.queueFamilyIndexCount);
-        this->swapchainCreateInfo.pQueueFamilyIndices = queueFamilyIndices.data();
-
-        if(didSurfaceChange) {
-            // need to store these to be able to revert back to the old state
-            oldSurfaceCapabilities = surfaceCapabilities;
-            oldSurfaceFormats = std::vector<VkSurfaceFormatKHR>(surfaceFormats);
-            oldSurfacePresentModes = std::vector<VkPresentModeKHR>(surfacePresentModes);
-
-            // need to re-query
-            querySurfaceCapabilities();
-            querySurfaceFormats();
-            querySurfacePresentModes();
+        // as these settings don't need to be checked for support, we can set them immediately
+        setSurface(swapchainCreateInfo.surface);
+        setFlags(swapchainCreateInfo.flags);
+        setClipped(swapchainCreateInfo.clipped);
+        setImageSharingMode(swapchainCreateInfo.imageSharingMode);
+        if(swapchainCreateInfo.queueFamilyIndexCount != 0) {
+            std::vector<uint32_t> queueFamilyIndices =
+                std::vector<uint32_t>(swapchainCreateInfo.pQueueFamilyIndices,
+                                      swapchainCreateInfo.pQueueFamilyIndices
+                                          + swapchainCreateInfo.queueFamilyIndexCount);
+            setQueueFamilyIndices(queueFamilyIndices);
         }
+        setOldSwapchain(swapchainCreateInfo.oldSwapchain);
 
-        success = checkCreateInfoSupport();
-        if(!success) {
-            SLOG_WARNING("Surface is lacking support for requested features. Reverting to previously used settings.");
-            // reverting to old state
-            if(didSurfaceChange) {
-                this->swapchainCreateInfo = oldSwapchainCreateInfo;
-                surfaceCapabilities       = oldSurfaceCapabilities;
-                surfaceFormats            = oldSurfaceFormats;
-                surfacePresentModes       = oldSurfacePresentModes;
-            }
-            this->queueFamilyIndices = std::vector<uint32_t>(oldQueueFamilyIndices);
+        if(physicalDevice != VK_NULL_HANDLE) {
+            // this means that we have already queried surface properties
+            setSurfaceFormat(VkSurfaceFormatKHR{swapchainCreateInfo.imageFormat,
+                                                swapchainCreateInfo.imageColorSpace});
+            setMinImageCount(swapchainCreateInfo.minImageCount);
+            setImageExtent(surfaceCapabilities.currentExtent);
+            setImageArrayLayers(swapchainCreateInfo.imageArrayLayers);
+            setImageUsage(swapchainCreateInfo.imageUsage);
+            setPreTransform(swapchainCreateInfo.preTransform);
+            setCompositeAlpha(swapchainCreateInfo.compositeAlpha);
+            setPresentMode(swapchainCreateInfo.presentMode);
+        } else {
+            // we couldn't yet query surface properties (because no physical
+            // device is set yet) so we will just set the values and check if
+            // they are supported when setting the physical device
+            this->swapchainCreateInfo.imageFormat = swapchainCreateInfo.imageFormat;
+            this->swapchainCreateInfo.minImageCount = swapchainCreateInfo.minImageCount;
+            this->swapchainCreateInfo.imageExtent = swapchainCreateInfo.imageExtent;
+            this->swapchainCreateInfo.imageArrayLayers = swapchainCreateInfo.imageArrayLayers;
+            this->swapchainCreateInfo.imageUsage = swapchainCreateInfo.imageUsage;
+            this->swapchainCreateInfo.preTransform = swapchainCreateInfo.preTransform;
+            this->swapchainCreateInfo.compositeAlpha = swapchainCreateInfo.compositeAlpha;
+            this->swapchainCreateInfo.presentMode = swapchainCreateInfo.presentMode;
         }
     } else {
-        SLOG_WARNING("Surface is invalid when attempting to set SwapchainCreateInfo. Reverting to previously used settings.");
+        SLOG_WARNING("New Surface is invalid when attempting to set SwapchainCreateInfo. Reverting to previously used settings.");
         // no need to do anything as nothing has been updated yet
     }
     return *this;
@@ -178,6 +183,16 @@ SwapchainBuilder& SwapchainBuilder::setImageExtent(const VkExtent2D imageExtent,
     success = checkImageExtentSupport(imageExtent);
     if(success) {
         swapchainCreateInfo.imageExtent = imageExtent;
+    } else if(imageExtent.width == std::numeric_limits<uint32_t>::max()) {
+        // according to the Vulkan Tutorial these special values can occur with
+        // some window managers and need to be handled accordingsly
+        swapchainCreateInfo.imageExtent = VkExtent2D{
+            std::clamp<uint32_t>(imageExtent.width,
+                                 surfaceCapabilities.minImageExtent.width,
+                                 surfaceCapabilities.maxImageExtent.width),
+            std::clamp<uint32_t>(imageExtent.height,
+                                 surfaceCapabilities.minImageExtent.height,
+                                 surfaceCapabilities.maxImageExtent.height)};
     }
     return *this;
 }
@@ -264,6 +279,7 @@ SwapchainBuilder& SwapchainBuilder::setPresentMode(const VkPresentModeKHR presen
         success                         = true;
     } else {
         success = false;
+        SLOG_WARNING("Requested Swapchain presentMode not supported. (may also be caused by either invalid Physical Device or Surface)");
     }
     return *this;
 }
@@ -333,6 +349,21 @@ SwapchainBuilder& SwapchainBuilder::setToTripleBuffering() {
     return setToTripleBuffering(success);
 }
 
+SwapchainBuilder& SwapchainBuilder::setToDefaultSettings() {
+    // need to store and set surface again as there does not exists a default option for this
+    VkSurfaceKHR surface        = swapchainCreateInfo.surface;
+    swapchainCreateInfo         = defaultSwapchainCreateInfo;
+    swapchainCreateInfo.surface = surface;
+
+    if(physicalDevice != VK_NULL_HANDLE && swapchainCreateInfo.surface != VK_NULL_HANDLE) {
+        setMinImageCount(surfaceCapabilities.minImageCount);
+        setImageExtent(surfaceCapabilities.currentExtent);
+    }
+
+    return *this;
+}
+
+
 void SwapchainBuilder::querySurfaceCapabilities() {
     check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
               physicalDevice, swapchainCreateInfo.surface, &surfaceCapabilities),
@@ -386,7 +417,8 @@ bool SwapchainBuilder::checkMinImageCountSupport(uint32_t minImageCount) const {
         SLOG_WARNING("Requested Swapchain minImageCount of "
                      << minImageCount << " not supported. Has to be between "
                      << surfaceCapabilities.minImageCount << " and "
-                     << surfaceCapabilities.maxImageCount << ".");
+                     << surfaceCapabilities.maxImageCount
+                     << ". (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -403,7 +435,7 @@ bool SwapchainBuilder::checkSurfaceFormatSupport(VkSurfaceFormatKHR imageFormat)
     if(std::find(surfaceFormats.begin(), surfaceFormats.end(), imageFormat)
        == surfaceFormats.end()) {
 
-        SLOG_WARNING("Requested Swapchain Surface Format not supported.");
+        SLOG_WARNING("Requested Swapchain Surface Format not supported. (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -420,7 +452,8 @@ bool SwapchainBuilder::checkImageExtentSupport(VkExtent2D imageExtent) const {
                      << surfaceCapabilities.minImageExtent.width << ","
                      << surfaceCapabilities.minImageExtent.height << ") and ("
                      << surfaceCapabilities.maxImageExtent.width << ","
-                     << surfaceCapabilities.maxImageExtent.height << ").");
+                     << surfaceCapabilities.maxImageExtent.height
+                     << ").  (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -430,7 +463,8 @@ bool SwapchainBuilder::checkImageArrayLayersSupport(uint32_t imageArrayLayers) c
     if(imageArrayLayers > surfaceCapabilities.maxImageArrayLayers) {
         SLOG_WARNING("Requested Swapchain imageArrayLayers of "
                      << imageArrayLayers << " not supported. Has to be lesser than or equal to "
-                     << surfaceCapabilities.maxImageArrayLayers << ".");
+                     << surfaceCapabilities.maxImageArrayLayers
+                     << ". (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -439,7 +473,7 @@ bool SwapchainBuilder::checkImageArrayLayersSupport(uint32_t imageArrayLayers) c
 bool SwapchainBuilder::checkImageUsageSupport(VkImageUsageFlags imageUsage) const {
     if((surfaceCapabilities.supportedUsageFlags | imageUsage)
        != surfaceCapabilities.supportedUsageFlags) {
-        SLOG_WARNING("Requested Swapchain imageUsageFlags not supported.");
+        SLOG_WARNING("Requested Swapchain imageUsageFlags not supported. (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -448,7 +482,7 @@ bool SwapchainBuilder::checkImageUsageSupport(VkImageUsageFlags imageUsage) cons
 bool SwapchainBuilder::checkPreTransformSupport(VkSurfaceTransformFlagBitsKHR preTransform) const {
     if((surfaceCapabilities.supportedTransforms | preTransform)
        != surfaceCapabilities.supportedTransforms) {
-        SLOG_WARNING("Requested Swapchain preTransform not supported.");
+        SLOG_WARNING("Requested Swapchain preTransform not supported. (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -457,7 +491,7 @@ bool SwapchainBuilder::checkPreTransformSupport(VkSurfaceTransformFlagBitsKHR pr
 bool SwapchainBuilder::checkCompositeAlphaSupport(VkCompositeAlphaFlagBitsKHR compositeAlpha) const {
     if((surfaceCapabilities.supportedCompositeAlpha | compositeAlpha)
        != surfaceCapabilities.supportedCompositeAlpha) {
-        SLOG_WARNING("Requested Swapchain compositeAlpha not supported.");
+        SLOG_WARNING("Requested Swapchain compositeAlpha not supported. (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
@@ -466,7 +500,7 @@ bool SwapchainBuilder::checkCompositeAlphaSupport(VkCompositeAlphaFlagBitsKHR co
 bool SwapchainBuilder::checkPresentModeSupport(VkPresentModeKHR presentMode) const {
     if(std::find(surfacePresentModes.begin(), surfacePresentModes.end(), presentMode)
        == surfacePresentModes.end()) {
-        SLOG_WARNING("Requested Swapchain presentMode not supported.");
+        SLOG_WARNING("Requested Swapchain presentMode not supported. (may also be caused by either invalid Physical Device or Surface)");
         return false;
     }
     return true;
