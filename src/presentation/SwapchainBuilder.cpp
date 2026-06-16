@@ -12,15 +12,29 @@ SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice,
     setSurface(surface);
 }
 
-void SwapchainBuilder::build(const VkDevice& device, VkSwapchainKHR& swapchain) const {
+// TODO: finish implementing this
+Swapchain SwapchainBuilder::build(const VkDevice& device) const {
+    Swapchain swapchain;
     check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
     check(swapchainCreateInfo.surface != VK_NULL_HANDLE,
           "Surface is invalid on Swapchain creation.");
     check(device != VK_NULL_HANDLE, "Device is invalid on Swapchain creation.");
 
-    check(vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain),
+    check(vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain.handle),
           "Failed to create Swapchain.");
     SLOG_INFO("Successfully created Swapchain.");
+
+    // extracting swapchain images
+    uint32_t swapchainImageCount;
+    // TODO: need to insert "check" functions here!
+    vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount, nullptr);
+    swapchain.images.resize(swapchainImageCount);
+    vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount,
+                            swapchain.images.data());
+    swapchain.imageFormat = swapchainCreateInfo.imageFormat;
+    swapchain.extent      = swapchainCreateInfo.imageExtent;
+
+    return swapchain;
 }
 
 SwapchainBuilder& SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& physicalDevice,

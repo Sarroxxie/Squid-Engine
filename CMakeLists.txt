@@ -25,6 +25,8 @@ src/setup/PhysicalDeviceSelector.cpp
 src/setup/QueueFamiliyIndices.h
 src/setup/QueueFamilyIndices.cpp
 
+src/presentation/Swapchain.h
+src/presentation/Swapchain.cpp
 src/presentation/SwapchainBuilder.h
 src/presentation/SwapchainBuilder.cpp
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include <vector>
+#include "Swapchain.h"
 
 /*
 Wrapper for creation of a VkSwapchainKHR. Choose desired settings for the
@@ -32,7 +31,7 @@ class SwapchainBuilder
     this function. As this function requires a valid Physical Device and
     Surface, it should only be called after setting those.
     */
-    void build(const VkDevice& device, VkSwapchainKHR& swapchain) const;
+    Swapchain build(const VkDevice& device) const;
 
     /*
     Sets the Physical Device to be used in the Swapchain creation. If a valid

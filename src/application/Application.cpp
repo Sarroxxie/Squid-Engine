@@ -18,21 +18,25 @@ VkInstance& Application::getInstance() {
 }
 
 void Application::cleanup() {
-    if(swapchain != VK_NULL_HANDLE)
-        vkDestroySwapchainKHR(device, swapchain, nullptr);
-    SLOG_INFO("Cleaned up Swapchain.");
+    if(swapchain.handle != VK_NULL_HANDLE) {
+        swapchain.destroy(device);
+        SLOG_INFO("Cleaned up Swapchain.");
+    }
 
-    if(device != VK_NULL_HANDLE)
+    if(device != VK_NULL_HANDLE) {
         vkDestroyDevice(device, nullptr);
-    SLOG_INFO("Cleaned up Logical Device.");
+        SLOG_INFO("Cleaned up Logical Device.");
+    }
 
-    if(surface != VK_NULL_HANDLE)
+    if(surface != VK_NULL_HANDLE) {
         vkDestroySurfaceKHR(instance, surface, nullptr);
-    SLOG_INFO("Cleaned up Surface.");
+        SLOG_INFO("Cleaned up Surface.");
+    }
 
-    if(instance != VK_NULL_HANDLE)
+    if(instance != VK_NULL_HANDLE) {
         vkDestroyInstance(instance, nullptr);
-    SLOG_INFO("Cleaned up Instance.");
+        SLOG_INFO("Cleaned up Instance.");
+    }
 
     SLOG_INFO("Application cleanup complete.");
 }

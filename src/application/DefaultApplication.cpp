@@ -94,9 +94,9 @@ void DefaultApplication::createDevice() {
 }
 
 void DefaultApplication::createSwapchain() {
-    swapchainBuilder.setPhysicalDevice(this->physicalDevice);
-    swapchainBuilder.setSurface(this->surface);
+    swapchainBuilder.setPhysicalDevice(physicalDevice);
+    swapchainBuilder.setSurface(surface);
     swapchainBuilder.setToTripleBuffering();
 
-    swapchainBuilder.build(this->device, this->swapchain);
+    swapchain = swapchainBuilder.build(device);
 }

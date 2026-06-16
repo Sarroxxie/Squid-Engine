@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Window.h"
-#include <vulkan/vulkan.h>
+#include "presentation/Swapchain.h"
 
 /*
 This class keeps track of all Vulkan objects that are mandatory for all usecases.
@@ -26,11 +26,13 @@ class Application
     Window* const    window;
     VkInstance       instance       = VK_NULL_HANDLE;
     VkSurfaceKHR     surface        = VK_NULL_HANDLE;
-    VkSwapchainKHR   swapchain      = VK_NULL_HANDLE;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice         device         = VK_NULL_HANDLE;
+    Swapchain        swapchain;
+
 
     // TODO: maybe there is a better location for these, in some larger class that handles rendering
+    //       -> instead should separate "Application" and "Rendering" completely
     VkQueue graphicsQueue = VK_NULL_HANDLE;
     VkQueue presentQueue  = VK_NULL_HANDLE;
 
