@@ -24,6 +24,8 @@ Swapchain SwapchainBuilder::build(const VkDevice& device) const {
           "Failed to create Swapchain.");
     SLOG_INFO("Successfully created Swapchain.");
 
+    // TODO: create different functions for swapchain image extraction + swapchain image view creation
+
     // extracting swapchain images
     uint32_t swapchainImageCount;
     // TODO: need to insert "check" functions here!
@@ -33,6 +35,13 @@ Swapchain SwapchainBuilder::build(const VkDevice& device) const {
                             swapchain.images.data());
     swapchain.imageFormat = swapchainCreateInfo.imageFormat;
     swapchain.extent      = swapchainCreateInfo.imageExtent;
+
+
+    // creating image views for swapchain images
+    swapchain.imageViews.resize(swapchain.images.size());
+    VkImageViewCreateInfo imageViewCreateInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
+    // TODO: finish implementation!
+
 
     return swapchain;
 }
