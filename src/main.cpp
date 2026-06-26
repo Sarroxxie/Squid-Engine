@@ -15,7 +15,7 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
-     * 2.5. make it possible to pass custom exceptions to "check" in VulkanCheck.cpp to throw those instead
+     * 2.5. write abstraction for image view creation
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
      * 5. add ImGui (maybe set context per Window)

@@ -2,7 +2,10 @@
 
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include "exceptions/SwapchainCreationException.h"
 #include <algorithm>
+
+// template void check_t<std::runtime_error>(const bool result, const std::string message);
 
 SwapchainBuilder::SwapchainBuilder() {}
 
@@ -15,24 +18,31 @@ SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice,
 // TODO: finish implementing this
 Swapchain SwapchainBuilder::build(const VkDevice& device) const {
     Swapchain swapchain;
-    check(physicalDevice != VK_NULL_HANDLE, "Physical Device is invalid on Swapchain creation.");
-    check(swapchainCreateInfo.surface != VK_NULL_HANDLE,
-          "Surface is invalid on Swapchain creation.");
-    check(device != VK_NULL_HANDLE, "Device is invalid on Swapchain creation.");
 
-    check(vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain.handle),
-          "Failed to create Swapchain.");
+    check<SwapchainCreationException>(physicalDevice != VK_NULL_HANDLE,
+                                      "Physical Device is invalid.");
+    check<SwapchainCreationException>(swapchainCreateInfo.surface != VK_NULL_HANDLE,
+                                      "Surface is invalid.");
+    check<SwapchainCreationException>(device != VK_NULL_HANDLE, "Device is invalid.");
+
+    check<SwapchainCreationException>(vkCreateSwapchainKHR(device, &swapchainCreateInfo,
+                                                           nullptr, &swapchain.handle),
+                                      "Failed to create Swapchain.");
     SLOG_INFO("Successfully created Swapchain.");
 
     // TODO: create different functions for swapchain image extraction + swapchain image view creation
 
     // extracting swapchain images
     uint32_t swapchainImageCount;
-    // TODO: need to insert "check" functions here!
-    check(vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount, nullptr), "INSERT MESSAGE HERE TODO");
+
+    check<SwapchainCreationException>(
+        vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount, nullptr),
+        "INSERT MESSAGE HERE TODO");
     swapchain.images.resize(swapchainImageCount);
-    check(vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount, swapchain.images.data()),
-          "INSERT MESSAGE HERE TODO");
+    check<SwapchainCreationException>(
+        vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount,
+                                swapchain.images.data()),
+        "INSERT MESSAGE HERE TODO");
     swapchain.imageFormat = swapchainCreateInfo.imageFormat;
     swapchain.extent      = swapchainCreateInfo.imageExtent;
 
@@ -54,10 +64,11 @@ Swapchain SwapchainBuilder::build(const VkDevice& device) const {
     createInfo.subresourceRange.layerCount     = 1;
 
     for(size_t i = 0; i < swapchain.images.size(); i++) {
-        createInfo.image        = swapchain.images[i];
+        createInfo.image = swapchain.images[i];
 
-        check(vkCreateImageView(device, &createInfo, nullptr, &swapchain.imageViews[i]),
-              "Failed to create Image View after fetching Swapchain Images.");
+        check<SwapchainCreationException>(
+            vkCreateImageView(device, &createInfo, nullptr, &swapchain.imageViews[i]),
+            "Failed to create Image View after fetching Swapchain Images.");
     }
 
     return swapchain;
@@ -405,34 +416,36 @@ SwapchainBuilder& SwapchainBuilder::setToDefaultSettings() {
 
 
 void SwapchainBuilder::querySurfaceCapabilities() {
-    check(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
-              physicalDevice, swapchainCreateInfo.surface, &surfaceCapabilities),
-          "Failed to query Surface Capabilities on Swapchain Creation.");
+    check<SwapchainCreationException>(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+                                          physicalDevice, swapchainCreateInfo.surface,
+                                          &surfaceCapabilities),
+                                      "Failed to query Surface Capabilities.");
 }
 
 void SwapchainBuilder::querySurfaceFormats() {
     uint32_t surfaceFormatCount;
-    check(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice,
-                                               swapchainCreateInfo.surface,
-                                               &surfaceFormatCount, nullptr),
-          "Failed to query Surface Formats on Swapchain Creation.");
+    check<SwapchainCreationException>(
+        vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, swapchainCreateInfo.surface,
+                                             &surfaceFormatCount, nullptr),
+        "Failed to query Surface Formats.");
     surfaceFormats.resize(surfaceFormatCount);
-    check(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice,
-                                               swapchainCreateInfo.surface, &surfaceFormatCount,
-                                               surfaceFormats.data()),
-          "Failed to query Surface Formats on Swapchain Creation.");
+    check<SwapchainCreationException>(vkGetPhysicalDeviceSurfaceFormatsKHR(
+                                          physicalDevice, swapchainCreateInfo.surface,
+                                          &surfaceFormatCount, surfaceFormats.data()),
+                                      "Failed to query Surface Formats.");
 }
 
 void SwapchainBuilder::querySurfacePresentModes() {
     uint32_t presentModeCount;
-    check(vkGetPhysicalDeviceSurfacePresentModesKHR(
-              physicalDevice, swapchainCreateInfo.surface, &presentModeCount, nullptr),
-          "Failed to query Surface Present Modes on Swapchain Creation.");
+    check<SwapchainCreationException>(vkGetPhysicalDeviceSurfacePresentModesKHR(
+                                          physicalDevice, swapchainCreateInfo.surface,
+                                          &presentModeCount, nullptr),
+                                      "Failed to query Surface Present Modes.");
     surfacePresentModes.resize(presentModeCount);
-    check(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice,
-                                                    swapchainCreateInfo.surface, &presentModeCount,
-                                                    surfacePresentModes.data()),
-          "Failed to query Surface Present Modes on Swapchain Creation.");
+    check<SwapchainCreationException>(vkGetPhysicalDeviceSurfacePresentModesKHR(
+                                          physicalDevice, swapchainCreateInfo.surface,
+                                          &presentModeCount, surfacePresentModes.data()),
+                                      "Failed to query Surface Present Modes.");
 }
 
 bool SwapchainBuilder::checkCreateInfoSupport() const {
