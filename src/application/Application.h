@@ -13,7 +13,8 @@ class Application
   public:
     Application(Window* const window);
     /*
-    Initializes the application by calling all the pure virtual functions in the correct order.
+    Initializes the application by calling all the pure virtual functions in the
+    correct order.
     */
     virtual void init() final;
     VkInstance&  getInstance();
@@ -31,7 +32,8 @@ class Application
     Swapchain        swapchain;
 
 
-    // TODO: maybe there is a better location for these, in some larger class that handles rendering
+    // TODO: maybe there is a better location for these, in some larger class
+    // that handles rendering
     //       -> instead should separate "Application" and "Rendering" completely
     VkQueue graphicsQueue = VK_NULL_HANDLE;
     VkQueue presentQueue  = VK_NULL_HANDLE;

@@ -9,7 +9,7 @@ struct Swapchain
     /*
     Destroys the Swapchain via Vulkan API call.
     */
-    void                 destroy(VkDevice device);
+    void destroy(VkDevice device);
 
     VkSwapchainKHR           handle = VK_NULL_HANDLE;
     std::vector<VkImage>     images{};

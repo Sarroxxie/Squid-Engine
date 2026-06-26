@@ -13,7 +13,8 @@ class PhysicalDeviceSelector
     /*
     Finds the GPU that is most suitable. An expection is thrown if no suitable GPU is found.
     */
-    const VkPhysicalDevice& selectPhysicalDevice(const VkInstance& instance, const VkSurfaceKHR& surface) const;
+    const VkPhysicalDevice& selectPhysicalDevice(const VkInstance& instance,
+                                                 const VkSurfaceKHR& surface) const;
 
   protected:
     /*

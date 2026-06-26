@@ -52,7 +52,8 @@ class InstanceBuilder
     InstanceBuilder& setApiVersion(const uint32_t variant, const uint32_t major, const uint32_t minor);
 
     /*
-    Requests layers for the instance. Throws an exception if at least one of the Layers is not available.
+    Requests layers for the instance. Throws an exception if at least one of the
+    Layers is not available.
     */
     InstanceBuilder& requestLayers(const std::vector<const char*>& layers);
 
@@ -63,7 +64,8 @@ class InstanceBuilder
     InstanceBuilder& requestExtensions(const std::vector<const char*>& extensions);
 
     /*
-    Attaches a Debug Utils Messenger to the instance for debugging its creation and destruction.
+    Attaches a Debug Utils Messenger to the instance for debugging its creation
+    and destruction.
     */
     InstanceBuilder& attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo);
 

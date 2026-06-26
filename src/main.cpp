@@ -2,14 +2,14 @@
 #include <vulkan/vulkan.h>
 
 // how to include the Vulkan Memory Allocator VMA (if it is installed with the
-// VulkanSDK) 
+// VulkanSDK)
 // #include <vma/vk_mem_alloc.h>
 
 #include "application/Window.h"
 #include "application/DefaultApplication.h"
 
-constexpr int WIDTH = 1280;
-constexpr int HEIGHT = 720;
+constexpr int  WIDTH      = 1280;
+constexpr int  HEIGHT     = 720;
 constexpr char APP_NAME[] = "Squid Engine";
 
 int main() {
@@ -20,9 +20,10 @@ int main() {
      * 4. Hello Triangle
      * 5. add ImGui (maybe set context per Window)
      * 6. Shadertoy (use Text Editor Widget from ImGui?)
-     * 
-     * 
-     * -> also split application and rendering! application should handle inputs (and physics?)
+     *
+     *
+     * -> also split application and rendering! application should handle inputs
+     * (and physics?)
      */
 
     Window window(WIDTH, HEIGHT, APP_NAME);

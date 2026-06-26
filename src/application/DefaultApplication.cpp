@@ -6,7 +6,8 @@
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
 
-DefaultApplication::DefaultApplication(Window* window) : DefaultApplication(window, false) {}
+DefaultApplication::DefaultApplication(Window* window)
+    : DefaultApplication(window, false) {}
 
 DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
     : Application::Application(window)
@@ -71,7 +72,8 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
 }
 
 void DefaultApplication::createSurface() {
-    check(glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface), "Window Surface creation failed.");
+    check(glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface),
+          "Window Surface creation failed.");
     SLOG_INFO("Successfully created Surface.");
 }
 

@@ -10,8 +10,8 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
               const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
               void*                                       userData) {
 
-    //TODO: should map message severity to logger macro
-    //      -> also print message type
+    // TODO: should map message severity to logger macro
+    //       -> also print message type
     SLOG_INFO("VL: " << callbackData->pMessage);
 
     return VK_FALSE;
@@ -66,8 +66,8 @@ void DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(VkDebugUtilsMess
     createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
                              | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-                             // TODO: might enable this conditionally
-                             //| VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
+    // TODO: might enable this conditionally
+    //| VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
     createInfo.pfnUserCallback = debugCallback;
     createInfo.pUserData       = nullptr;
 }
