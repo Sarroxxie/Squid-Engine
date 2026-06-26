@@ -15,7 +15,6 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
-     * 2.4 look through code and replace all "int" in for-loops with "size_t"
      * 2.5. make it possible to pass custom exceptions to "check" in VulkanCheck.cpp to throw those instead
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle

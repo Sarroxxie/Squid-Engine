@@ -20,7 +20,7 @@ QueueFamilyIndices QueueFamilyUtils::findQueueFamilies(const VkPhysicalDevice& p
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount,
                                              queueFamilies.data());
 
-    for(int i = 0; i < queueFamilyCount; i++) {
+    for(uint32_t i = 0; i < queueFamilyCount; i++) {
         if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
