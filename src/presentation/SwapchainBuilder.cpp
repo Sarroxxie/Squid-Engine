@@ -2,7 +2,7 @@
 
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
-#include "exceptions/SwapchainCreationException.h"
+#include "Exceptions.h"
 #include <algorithm>
 
 // template void check_t<std::runtime_error>(const bool result, const std::string message);

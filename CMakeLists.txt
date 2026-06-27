@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(SquidEngine
 src/main.cpp
+src/Exceptions.h
+
 src/application/Application.h
 src/application/Application.cpp
 src/application/DefaultApplication.h
@@ -33,8 +35,7 @@ src/presentation/SwapchainBuilder.cpp
 src/output/VulkanCheck.h
 src/output/VulkanCheck.cpp
 src/output/Logger.h
-
-src/exceptions/SwapchainCreationException.h)
+)
 
 # automatically sets the project as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SquidEngine)

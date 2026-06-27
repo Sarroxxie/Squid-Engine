@@ -2,8 +2,7 @@
 
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
-#include <string>
-#include <stdexcept>
+#include "Exceptions.h"
 
 DeviceBuilder::DeviceBuilder(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
     : physicalDevice(physicalDevice)
@@ -64,21 +63,24 @@ QueueFamilyIndices DeviceBuilder::build(VkDevice& device) {
         static_cast<uint32_t>(queueCreateInfos.size());
     deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-    check(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device),
-          "Failed to create VkDevice.");
+    check<DeviceCreationException>(vkCreateDevice(physicalDevice, &deviceCreateInfo,
+                                                  nullptr, &device),
+                                   "Failed to create VkDevice.");
     SLOG_INFO("Successfully created Logical Device.");
     return indices;
 }
 
 void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) const {
     uint32_t extensionCount;
-    check(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr),
-          "Failed to enumerate Device Extension Properties.");
+    check<DeviceCreationException>(
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr),
+        "Failed to enumerate Device Extension Properties.");
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    check(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
-                                               availableExtensions.data()),
-          "Failed to enumerate Device Extension Properties.");
+    check<DeviceCreationException>(
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount,
+                                             availableExtensions.data()),
+        "Failed to enumerate Device Extension Properties.");
 
     // collect all extensions that are not available inside this error message
     std::string errorMessage;
@@ -101,6 +103,6 @@ void DeviceBuilder::assertExtensionSupport(std::vector<const char*> extensions) 
     if(!errorMessage.empty()) {
         errorMessage = "The following device extensions were requested but not available:\n"
                        + errorMessage;
-        throw std::runtime_error(errorMessage);
+        throw DeviceCreationException(errorMessage);
     }
 }

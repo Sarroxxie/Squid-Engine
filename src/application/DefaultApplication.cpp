@@ -5,6 +5,7 @@
 #include "setup/DeviceBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include "Exceptions.h"
 
 DefaultApplication::DefaultApplication(Window* window)
     : DefaultApplication(window, false) {}
@@ -18,7 +19,7 @@ DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
         // constructor which requires a valid instance.
         if(USE_DEBUG_UTILS)
             debugMessenger = DebugUtilsMessenger(instance);
-    } catch(std::runtime_error& e) {
+    } catch(std::exception& e) {
         SLOG_FATAL(e.what());
         // destroying all previously created resources
         cleanup();
@@ -72,8 +73,9 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
 }
 
 void DefaultApplication::createSurface() {
-    check(glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface),
-          "Window Surface creation failed.");
+    check<SurfaceCreationException>(
+        glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface),
+        "Window Surface creation failed.");
     SLOG_INFO("Successfully created Surface.");
 }
 

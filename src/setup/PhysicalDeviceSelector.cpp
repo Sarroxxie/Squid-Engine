@@ -3,6 +3,7 @@
 #include "QueueFamiliyIndices.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include "Exceptions.h"
 #include <vector>
 
 const VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(const VkInstance& instance,
@@ -10,14 +11,16 @@ const VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(const VkIns
     VkPhysicalDevice physicalDevice      = VK_NULL_HANDLE;
     int              physicalDeviceScore = -1;
     uint32_t         deviceCount         = 0;
-    check(vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr),
-          "Failed to enumerate Physical Devices.");
+    check<PhysicalDeviceSelectionException>(
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr),
+        "Failed to enumerate Physical Devices.");
 
-    check(deviceCount != 0, "No available GPU supports Vulkan.");
+    check<PhysicalDeviceSelectionException>(deviceCount != 0, "No available GPU supports Vulkan.");
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
-    check(vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data()),
-          "Failed to enumerate Physical Devices.");
+    check<PhysicalDeviceSelectionException>(
+        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data()),
+        "Failed to enumerate Physical Devices.");
 
     for(const auto& device : devices) {
         int currentScore = rateDeviceSuitability(device, surface);
@@ -27,11 +30,12 @@ const VkPhysicalDevice& PhysicalDeviceSelector::selectPhysicalDevice(const VkIns
         }
     }
 
-    check(physicalDevice != VK_NULL_HANDLE, "No suitable GPU found.");
+    check<PhysicalDeviceSelectionException>(physicalDevice != VK_NULL_HANDLE,
+                                            "No suitable GPU found.");
 
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-    // TODO: should use a logger here!
+
     SLOG_INFO("Using Physical Device \"" << deviceProperties.deviceName << "\"");
 
     return physicalDevice;

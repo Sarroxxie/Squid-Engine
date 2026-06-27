@@ -2,6 +2,7 @@
 
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include "Exceptions.h"
 
 // This method handles all the messages that get passed to the CPU from the Validation Layers.
 static VKAPI_ATTR VkBool32 VKAPI_CALL
@@ -46,8 +47,9 @@ DebugUtilsMessenger::DebugUtilsMessenger(VkInstance& instance) {
     VkDebugUtilsMessengerCreateInfoEXT createInfo{};
     DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(createInfo);
 
-    check(createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger),
-          "Failed to create Debug Utils Messenger.");
+    check<DebugUtilsMessengerCreationException>(
+        createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger),
+        "Failed to create Debug Utils Messenger.");
     SLOG_INFO("Successfully created Debug Utils Messenger.");
 }
 

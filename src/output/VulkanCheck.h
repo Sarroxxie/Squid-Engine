@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-#include <string>
-
 #include <stdexcept>
 #include <type_traits>
 
@@ -38,32 +36,32 @@ https://isocpp.org/wiki/faq/templates#separate-template-fn-defn-from-decl
 
 template <typename T>
 void check(const VkResult result) {
-    static_assert(std::is_base_of<std::runtime_error, T>::value,
-                  "T must inherit from std::runtime_error (in VulkanCheck.cpp).");
+    static_assert(std::is_base_of<std::exception, T>::value,
+                  "T must inherit from std::exception (in VulkanCheck.h).");
     if(result != VK_SUCCESS)
         throw T("Vulkan call returned an error.\n");
 }
 
 template <typename T>
 void check(const VkResult result, const std::string message) {
-    static_assert(std::is_base_of<std::runtime_error, T>::value,
-                  "T must inherit from std::runtime_error (in VulkanCheck.cpp).");
+    static_assert(std::is_base_of<std::exception, T>::value,
+                  "T must inherit from std::exception (in VulkanCheck.h).");
     if(result != VK_SUCCESS)
         throw T(message);
 }
 
 template <typename T>
 void check(const bool result) {
-    static_assert(std::is_base_of<std::runtime_error, T>::value,
-                  "T must inherit from std::runtime_error (in VulkanCheck.cpp).");
+    static_assert(std::is_base_of<std::exception, T>::value,
+                  "T must inherit from std::exception (in VulkanCheck.h).");
     if(!result)
         throw T("Call returned an error.\n");
 }
 
 template <typename T>
 void check(const bool result, const std::string message) {
-    static_assert(std::is_base_of<std::runtime_error, T>::value,
-                  "T must inherit from std::runtime_error (in VulkanCheck.cpp).");
+    static_assert(std::is_base_of<std::exception, T>::value,
+                  "T must inherit from std::exception (in VulkanCheck.h).");
     if(!result)
         throw T(message);
 }

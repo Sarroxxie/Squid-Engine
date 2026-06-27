@@ -1,6 +1,7 @@
 #include "InstanceBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
+#include "Exceptions.h"
 #include <stdexcept>
 
 
@@ -76,18 +77,20 @@ InstanceBuilder& InstanceBuilder::attachDebugMessenger(VkDebugUtilsMessengerCrea
 }
 
 void InstanceBuilder::build(VkInstance& instance) const {
-    check(vkCreateInstance(&createInfo, nullptr, &instance), "Failed to create VkInstance.");
+    check<InstanceCreationException>(vkCreateInstance(&createInfo, nullptr, &instance),
+                                     "Failed to create VkInstance.");
     SLOG_INFO("Successfully created Instance.");
 }
 
 void InstanceBuilder::assertLayerSupport(const std::vector<const char*> layers) const {
     uint32_t layerCount;
-    check(vkEnumerateInstanceLayerProperties(&layerCount, nullptr),
-          "Failed to enumerate Instance Layer Properties.");
+    check<InstanceCreationException>(vkEnumerateInstanceLayerProperties(&layerCount, nullptr),
+                                     "Failed to enumerate Instance Layer Properties.");
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
-    check(vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data()),
-          "Failed to enumerate Instance Layer Properties.");
+    check<InstanceCreationException>(
+        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data()),
+        "Failed to enumerate Instance Layer Properties.");
 
     // collect all layers that are not available inside this error message
     std::string errorMessage = "";
@@ -110,19 +113,21 @@ void InstanceBuilder::assertLayerSupport(const std::vector<const char*> layers) 
     if(!errorMessage.empty()) {
         errorMessage = "The following instance layers were requested but not available:\n"
                        + errorMessage;
-        throw std::runtime_error(errorMessage);
+        throw InstanceCreationException(errorMessage);
     }
 }
 
 void InstanceBuilder::assertExtensionSupport(const std::vector<const char*> extensions) const {
     uint32_t extensionCount;
-    check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr),
-          "Failed to enumerate Instance Extension Properties.");
+    check<InstanceCreationException>(
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr),
+        "Failed to enumerate Instance Extension Properties.");
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    check(vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
-                                                 availableExtensions.data()),
-          "Failed to enumerate Instance Extension Properties.");
+    check<InstanceCreationException>(
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
+                                               availableExtensions.data()),
+        "Failed to enumerate Instance Extension Properties.");
 
     // collect all extensions that are not available inside this error message
     std::string errorMessage;
@@ -145,6 +150,6 @@ void InstanceBuilder::assertExtensionSupport(const std::vector<const char*> exte
     if(!errorMessage.empty()) {
         errorMessage = "The following instance extensions were requested but not available:\n"
                        + errorMessage;
-        throw std::runtime_error(errorMessage);
+        throw InstanceCreationException(errorMessage);
     }
 }
