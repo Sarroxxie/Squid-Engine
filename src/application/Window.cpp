@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include <iostream>
+#include "output/Logger.h"
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     // TODO: create callback data to access here if needed -> this is the
@@ -13,7 +13,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
-static void framebufferResizeCallback(GLFWwindow* glfWwindow, int width, int height) {
+static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     // TODO: use callback data to trigger a resize for Vulkan
     // TODO: update width and height of window
     // auto* callbackData = (CallbackData*) glfwGetWindowUserPointer(window);
@@ -35,10 +35,6 @@ Window::Window(const int width, const int height, const std::string appName)
     glfwSetKeyCallback(window, keyCallback);
 }
 
-Window::~Window() {
-    glfwDestroyWindow(window);
-}
-
 bool Window::shouldClose() const {
     return glfwWindowShouldClose(window);
 }
@@ -52,5 +48,11 @@ int Window::getHeight() const {
 }
 
 GLFWwindow* Window::getWindowHandle() const {
-    return this->window;
+    return window;
+}
+
+void Window::cleanup() {
+    glfwDestroyWindow(window);
+
+    SLOG_INFO("Window cleanup complete.");
 }

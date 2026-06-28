@@ -1,21 +1,21 @@
 #pragma once
 
-#include "Application.h"
+#include "VulkanRenderer.h"
 #include "setup/DebugUtilsMessenger.h"
 #include "presentation/SwapchainBuilder.h"
 #include <vector>
 
 /*
 This class serves as a default implementation for the abstract class
-"Application". Take it as a guide on how to implement your own Application.
+"VulkanRenderer". Take it as a guide on how to implement your own VulkanRenderer.
  */
-class DefaultApplication : public Application
+class DefaultVulkanRenderer : public VulkanRenderer
 {
   public:
     // Creates a DefaultApplication without enabling validation layers.
-    DefaultApplication(Window* window);
+    DefaultVulkanRenderer(Window* const window);
     // Creates a DefaultApplication with the option of enabling validation layers.
-    DefaultApplication(Window* window, bool useDebugUtils);
+    DefaultVulkanRenderer(Window* const window, bool useDebugUtils);
     // Destroys all used resources.
     void cleanup();
 

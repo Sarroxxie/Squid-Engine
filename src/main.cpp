@@ -5,8 +5,7 @@
 // VulkanSDK)
 // #include <vma/vk_mem_alloc.h>
 
-#include "application/Window.h"
-#include "application/DefaultApplication.h"
+#include "application/Application.h"
 
 constexpr int  WIDTH      = 1280;
 constexpr int  HEIGHT     = 720;
@@ -28,13 +27,11 @@ int main() {
 
     Window window(WIDTH, HEIGHT, APP_NAME);
 
-    DefaultApplication app(&window, true);
+    DefaultVulkanRenderer renderer(&window, true);
 
-    while(!window.shouldClose()) {
-        // main loop
-        glfwPollEvents();
-    }
-    window.~Window();
+    Application app(&renderer);
+
+    app.run();
 
     app.cleanup();
     glfwTerminate();

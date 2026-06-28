@@ -9,10 +9,13 @@ src/Exceptions.h
 
 src/application/Application.h
 src/application/Application.cpp
-src/application/DefaultApplication.h
-src/application/DefaultApplication.cpp
 src/application/Window.h
 src/application/Window.cpp
+
+src/renderer/VulkanRenderer.h
+src/renderer/VulkanRenderer.cpp
+src/renderer/DefaultVulkanRenderer.h
+src/renderer/DefaultVulkanRenderer.cpp
 
 src/setup/DebugUtilsMessenger.h
 src/setup/DebugUtilsMessenger.cpp

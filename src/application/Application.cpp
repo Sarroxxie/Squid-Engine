@@ -2,41 +2,24 @@
 
 #include "output/Logger.h"
 
-Application::Application(Window* const window)
-    : window(window) {}
-
-void Application::init() {
-    createInstance();
-    createSurface();
-    selectPhysicalDevice();
-    createDevice();
-    createSwapchain();
-}
-
-VkInstance& Application::getInstance() {
-    return instance;
-}
+Application::Application(DefaultVulkanRenderer* const renderer) : renderer(renderer) {}
 
 void Application::cleanup() {
-    if(swapchain.handle != VK_NULL_HANDLE) {
-        swapchain.destroy(device);
-        SLOG_INFO("Cleaned up Swapchain.");
-    }
+    renderer->cleanup();
+}
 
-    if(device != VK_NULL_HANDLE) {
-        vkDestroyDevice(device, nullptr);
-        SLOG_INFO("Cleaned up Logical Device.");
+void Application::run() {
+    while(!renderer->getWindow()->shouldClose()) {
+        // main loop
+        processFrame();
     }
+}
 
-    if(surface != VK_NULL_HANDLE) {
-        vkDestroySurfaceKHR(instance, surface, nullptr);
-        SLOG_INFO("Cleaned up Surface.");
-    }
+void Application::processFrame() {
+    glfwPollEvents();
 
-    if(instance != VK_NULL_HANDLE) {
-        vkDestroyInstance(instance, nullptr);
-        SLOG_INFO("Cleaned up Instance.");
-    }
+    // TODO: do physics stuff, update game objects
 
-    SLOG_INFO("Application cleanup complete.");
+    // TODO: render frame
+    // renderer.render();
 }

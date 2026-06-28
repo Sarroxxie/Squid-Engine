@@ -1,4 +1,4 @@
-#include "DefaultApplication.h"
+#include "DefaultVulkanRenderer.h"
 
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
@@ -7,11 +7,11 @@
 #include "output/Logger.h"
 #include "Exceptions.h"
 
-DefaultApplication::DefaultApplication(Window* window)
-    : DefaultApplication(window, false) {}
+DefaultVulkanRenderer::DefaultVulkanRenderer(Window* const window)
+    : DefaultVulkanRenderer(window, false) {}
 
-DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
-    : Application::Application(window)
+DefaultVulkanRenderer::DefaultVulkanRenderer(Window* const window, bool useDebugUtils)
+    : VulkanRenderer::VulkanRenderer(window)
     , USE_DEBUG_UTILS(useDebugUtils) {
     try {
         init();
@@ -27,13 +27,13 @@ DefaultApplication::DefaultApplication(Window* window, bool useDebugUtils)
     }
 }
 
-void DefaultApplication::cleanup() {
+void DefaultVulkanRenderer::cleanup() {
     if(USE_DEBUG_UTILS)
         debugMessenger.cleanup(instance);
-    Application::cleanup();
+    VulkanRenderer::cleanup();
 }
 
-void DefaultApplication::createInstance() {
+void DefaultVulkanRenderer::createInstance() {
     InstanceBuilder builder;
     builder.setAppName("Thesis Renderer");
 
@@ -59,7 +59,7 @@ void DefaultApplication::createInstance() {
     builder.build(instance);
 }
 
-std::vector<const char*> DefaultApplication::getRequiredExtensions() {
+std::vector<const char*> DefaultVulkanRenderer::getRequiredExtensions() {
     std::vector<const char*> extensions;
 
     // extensions that are required by GLFW
@@ -72,19 +72,19 @@ std::vector<const char*> DefaultApplication::getRequiredExtensions() {
     return extensions;
 }
 
-void DefaultApplication::createSurface() {
+void DefaultVulkanRenderer::createSurface() {
     check<SurfaceCreationException>(
         glfwCreateWindowSurface(instance, window->getWindowHandle(), nullptr, &surface),
         "Window Surface creation failed.");
     SLOG_INFO("Successfully created Surface.");
 }
 
-void DefaultApplication::selectPhysicalDevice() {
+void DefaultVulkanRenderer::selectPhysicalDevice() {
     DefaultPhysicalDeviceSelector selector;
     physicalDevice = selector.selectPhysicalDevice(instance, surface);
 }
 
-void DefaultApplication::createDevice() {
+void DefaultVulkanRenderer::createDevice() {
     DeviceBuilder builder(physicalDevice, surface);
     // required for swap chain
     const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
@@ -97,7 +97,7 @@ void DefaultApplication::createDevice() {
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
-void DefaultApplication::createSwapchain() {
+void DefaultVulkanRenderer::createSwapchain() {
     swapchainBuilder.setPhysicalDevice(physicalDevice);
     swapchainBuilder.setSurface(surface);
     swapchainBuilder.setToTripleBuffering();
