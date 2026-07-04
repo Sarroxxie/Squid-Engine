@@ -68,7 +68,7 @@ Swapchain SwapchainBuilder::build(const VkDevice& device) const {
 
         check<SwapchainCreationException>(
             vkCreateImageView(device, &createInfo, nullptr, &swapchain.imageViews[i]),
-            "Failed to create Image View after fetching Swapchain Images.");
+            "Failed to create Image View after fetching Swapchain Image.");
     }
 
     return swapchain;
