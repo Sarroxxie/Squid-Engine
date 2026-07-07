@@ -5,6 +5,10 @@
 #include <stdexcept>
 
 
+InstanceBuilder::InstanceBuilder() {
+    createInfo.pApplicationInfo = &applicationInfo;
+}
+
 InstanceBuilder& InstanceBuilder::setAppName(const char* applicationName) {
     if(!applicationName)
         return *this;

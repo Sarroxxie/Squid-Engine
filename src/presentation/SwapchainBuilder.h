@@ -2,6 +2,40 @@
 
 #include "Swapchain.h"
 
+// TODO: create functions "createDefaultSwapchain" and "createFromCreateInfo" as
+//       standalone functions (needs namespace!)
+
+constexpr VkSwapchainCreateInfoKHR defaultSwapchainCreateInfo{
+    .sType                 = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+    .pNext                 = nullptr,
+    .flags                 = 0,
+    .minImageCount         = 2,
+    .imageFormat           = VK_FORMAT_B8G8R8A8_SRGB,
+    .imageColorSpace       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+    .imageExtent           = VkExtent2D{0, 0},
+    .imageArrayLayers      = 1,
+    .imageUsage            = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+    .imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE,
+    .queueFamilyIndexCount = 0,
+    .pQueueFamilyIndices   = nullptr,
+    .preTransform          = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+    .compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+    .presentMode           = VK_PRESENT_MODE_FIFO_KHR,
+    .clipped               = VK_FALSE,
+    .oldSwapchain          = VK_NULL_HANDLE};
+
+constexpr VkSurfaceCapabilitiesKHR defaultSurfaceCapabilities{
+    .minImageCount           = 0,
+    .maxImageCount           = 0,
+    .currentExtent           = VkExtent2D{0, 0},
+    .minImageExtent          = VkExtent2D{0, 0},
+    .maxImageExtent          = VkExtent2D{0, 0},
+    .maxImageArrayLayers     = 0,
+    .supportedTransforms     = 0,
+    .currentTransform        = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
+    .supportedCompositeAlpha = 0,
+    .supportedUsageFlags     = 0};
+
 /*
 Wrapper for creation of a VkSwapchainKHR. Choose desired settings for the
 Swapchain creation first and finally create it using "build". Most functions
@@ -250,41 +284,13 @@ class SwapchainBuilder
     VkPhysicalDevice         physicalDevice      = VK_NULL_HANDLE;
     VkSwapchainCreateInfoKHR swapchainCreateInfo = defaultSwapchainCreateInfo;
 
-    static constexpr VkSwapchainCreateInfoKHR defaultSwapchainCreateInfo{
-        .sType                 = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-        .flags                 = 0,
-        .minImageCount         = 2,
-        .imageFormat           = VK_FORMAT_B8G8R8A8_SRGB,
-        .imageColorSpace       = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
-        .imageExtent           = VkExtent2D{0, 0},
-        .imageArrayLayers      = 1,
-        .imageUsage            = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-        .imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount = 0,
-        .pQueueFamilyIndices   = nullptr,
-        .preTransform          = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-        .compositeAlpha        = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-        .presentMode           = VK_PRESENT_MODE_FIFO_KHR,
-        .clipped               = VK_FALSE,
-        .oldSwapchain          = VK_NULL_HANDLE};
-
-
     // need to buffer this to avoid that they go out of scope before "build" has been called
     std::vector<uint32_t> queueFamilyIndices;
 
     // these only get calculated once on surface change and then stored for
     // performance reasons invariant: these contain valid values once a valid
     // physical device and surface are set
-    VkSurfaceCapabilitiesKHR        surfaceCapabilities{.minImageCount = 0,
-                                                        .maxImageCount = 0,
-                                                        .currentExtent = VkExtent2D{0, 0},
-                                                        .minImageExtent = VkExtent2D{0, 0},
-                                                        .maxImageExtent = VkExtent2D{0, 0},
-                                                        .maxImageArrayLayers = 0,
-                                                        .supportedTransforms = 0,
-                                                        .currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
-                                                        .supportedCompositeAlpha = 0,
-                                                        .supportedUsageFlags = 0};
+    VkSurfaceCapabilitiesKHR surfaceCapabilities = defaultSurfaceCapabilities;
     std::vector<VkSurfaceFormatKHR> surfaceFormats;
     std::vector<VkPresentModeKHR>   surfacePresentModes;
 

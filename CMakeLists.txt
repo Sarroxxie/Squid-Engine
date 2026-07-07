@@ -34,6 +34,8 @@ src/presentation/Swapchain.h
 src/presentation/Swapchain.cpp
 src/presentation/SwapchainBuilder.h
 src/presentation/SwapchainBuilder.cpp
+src/presentation/ImageViewBuilder.h
+src/presentation/ImageViewBuilder.cpp
 
 src/output/VulkanCheck.h
 src/output/VulkanCheck.cpp

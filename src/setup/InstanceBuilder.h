@@ -3,13 +3,23 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+// TODO: finish moving stuff out into constexpr!
+
+constexpr VkApplicationInfo defaultApplicationInfo{
+    .sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+    .pApplicationName   = "Application",
+    .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+    .pEngineName        = "Engine",
+    .engineVersion      = VK_MAKE_VERSION(1, 0, 0),
+    .apiVersion         = VK_API_VERSION_1_4};
+
 /*
 Wrapper for creation of a VkInstance.
 */
 class InstanceBuilder
 {
   public:
-    InstanceBuilder() {};
+    InstanceBuilder();
     /*
     Sets the name of the application. Default name is "Application" if no name is provided.
     */
@@ -75,15 +85,21 @@ class InstanceBuilder
     void build(VkInstance& instance) const;
 
   private:
-    VkApplicationInfo applicationInfo{.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-                                      .pApplicationName = "Application",
-                                      .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
-                                      .pEngineName   = "Engine",
-                                      .engineVersion = VK_MAKE_VERSION(1, 0, 0),
-                                      .apiVersion    = VK_API_VERSION_1_4};
+    VkApplicationInfo applicationInfo = defaultApplicationInfo;
 
     VkInstanceCreateInfo createInfo{.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                     .pApplicationInfo = &applicationInfo};
+
+    /*
+    VkStructureType             sType;
+    const void*                 pNext;
+    VkInstanceCreateFlags       flags;
+    const VkApplicationInfo*    pApplicationInfo;
+    uint32_t                    enabledLayerCount;
+    const char* const*          ppEnabledLayerNames;
+    uint32_t                    enabledExtensionCount;
+    const char* const*          ppEnabledExtensionNames;
+    */
 
 
     /*
