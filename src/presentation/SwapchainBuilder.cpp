@@ -3,6 +3,7 @@
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
 #include "Exceptions.h"
+#include "ImageViewBuilder.h"
 #include <algorithm>
 
 // template void check_t<std::runtime_error>(const bool result, const std::string message);
@@ -15,10 +16,7 @@ SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice,
     setSurface(surface);
 }
 
-// TODO: finish implementing this
-Swapchain SwapchainBuilder::build(const VkDevice& device) const {
-    Swapchain swapchain;
-
+void SwapchainBuilder::build(const VkDevice& device, Swapchain& swapchain) const {
     check<SwapchainCreationException>(physicalDevice != VK_NULL_HANDLE,
                                       "Physical Device is invalid.");
     check<SwapchainCreationException>(swapchainCreateInfo.surface != VK_NULL_HANDLE,
@@ -28,50 +26,11 @@ Swapchain SwapchainBuilder::build(const VkDevice& device) const {
     check<SwapchainCreationException>(vkCreateSwapchainKHR(device, &swapchainCreateInfo,
                                                            nullptr, &swapchain.handle),
                                       "Failed to create Swapchain.");
-    SLOG_INFO("Successfully created Swapchain.");
 
-    // TODO: create different functions for swapchain image extraction + swapchain image view creation
-
-    // extracting swapchain images
-    uint32_t swapchainImageCount;
-
-    check<SwapchainCreationException>(
-        vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount, nullptr),
-        "INSERT MESSAGE HERE TODO");
-    swapchain.images.resize(swapchainImageCount);
-    check<SwapchainCreationException>(
-        vkGetSwapchainImagesKHR(device, swapchain.handle, &swapchainImageCount,
-                                swapchain.images.data()),
-        "INSERT MESSAGE HERE TODO");
     swapchain.imageFormat = swapchainCreateInfo.imageFormat;
-    swapchain.extent      = swapchainCreateInfo.imageExtent;
+    swapchain.imageExtent = swapchainCreateInfo.imageExtent;
 
-    // TODO: finish implementation! -> should write an abstraction for image view creation!
-
-    // creating image views for swapchain images
-    swapchain.imageViews.resize(swapchain.images.size());
-    VkImageViewCreateInfo createInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-    createInfo.viewType                        = VK_IMAGE_VIEW_TYPE_2D;
-    createInfo.format                          = swapchain.imageFormat;
-    createInfo.components.r                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.g                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.b                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.components.a                    = VK_COMPONENT_SWIZZLE_IDENTITY;
-    createInfo.subresourceRange.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-    createInfo.subresourceRange.baseMipLevel   = 0;
-    createInfo.subresourceRange.levelCount     = 1;
-    createInfo.subresourceRange.baseArrayLayer = 0;
-    createInfo.subresourceRange.layerCount     = 1;
-
-    for(size_t i = 0; i < swapchain.images.size(); i++) {
-        createInfo.image = swapchain.images[i];
-
-        check<SwapchainCreationException>(
-            vkCreateImageView(device, &createInfo, nullptr, &swapchain.imageViews[i]),
-            "Failed to create Image View after fetching Swapchain Image.");
-    }
-
-    return swapchain;
+    SLOG_INFO("Successfully created Swapchain.");
 }
 
 SwapchainBuilder& SwapchainBuilder::setPhysicalDevice(const VkPhysicalDevice& physicalDevice,
@@ -403,7 +362,7 @@ SwapchainBuilder& SwapchainBuilder::setToTripleBuffering() {
 SwapchainBuilder& SwapchainBuilder::setToDefaultSettings() {
     // need to store and set surface again as there does not exists a default option for this
     VkSurfaceKHR surface        = swapchainCreateInfo.surface;
-    swapchainCreateInfo         = defaultSwapchainCreateInfo;
+    swapchainCreateInfo         = DEFAULT_SWAPCHAIN_CREATE_INFO;
     swapchainCreateInfo.surface = surface;
 
     if(physicalDevice != VK_NULL_HANDLE && swapchainCreateInfo.surface != VK_NULL_HANDLE) {

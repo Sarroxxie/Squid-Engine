@@ -36,5 +36,8 @@ GENERATE_EXCEPTION(SurfaceCreationException);
 GENERATE_EXCEPTION(PhysicalDeviceSelectionException);
 GENERATE_EXCEPTION(DeviceCreationException);
 GENERATE_EXCEPTION(SwapchainCreationException);
+GENERATE_EXCEPTION(SwapchainImageRetrievalException);
 GENERATE_EXCEPTION(DebugUtilsMessengerCreationException);
 GENERATE_EXCEPTION(QueueFamiliyIndexException);
+
+GENERATE_EXCEPTION(ImageViewCreationException);

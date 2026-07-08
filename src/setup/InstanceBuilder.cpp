@@ -9,6 +9,12 @@ InstanceBuilder::InstanceBuilder() {
     createInfo.pApplicationInfo = &applicationInfo;
 }
 
+void InstanceBuilder::build(VkInstance& instance) const {
+    check<InstanceCreationException>(vkCreateInstance(&createInfo, nullptr, &instance),
+                                     "Failed to create VkInstance.");
+    SLOG_INFO("Successfully created Instance.");
+}
+
 InstanceBuilder& InstanceBuilder::setAppName(const char* applicationName) {
     if(!applicationName)
         return *this;
@@ -78,12 +84,6 @@ InstanceBuilder& InstanceBuilder::requestExtensions(const std::vector<const char
 InstanceBuilder& InstanceBuilder::attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo) {
     createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&messengerCreateInfo;
     return *this;
-}
-
-void InstanceBuilder::build(VkInstance& instance) const {
-    check<InstanceCreationException>(vkCreateInstance(&createInfo, nullptr, &instance),
-                                     "Failed to create VkInstance.");
-    SLOG_INFO("Successfully created Instance.");
 }
 
 void InstanceBuilder::assertLayerSupport(const std::vector<const char*> layers) const {

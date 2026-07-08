@@ -102,5 +102,7 @@ void DefaultVulkanRenderer::createSwapchain() {
     swapchainBuilder.setSurface(surface);
     swapchainBuilder.setToTripleBuffering();
 
-    swapchain = swapchainBuilder.build(device);
+    swapchainBuilder.build(device, swapchain);
+    // we need this to be able to later access the Image Views of the Swapchain
+    swapchain.retrieveSwapchainImages(device);
 }

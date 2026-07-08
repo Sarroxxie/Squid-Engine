@@ -3,14 +3,13 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-// TODO: finish moving stuff out into constexpr!
-
-constexpr VkApplicationInfo defaultApplicationInfo{
+constexpr VkApplicationInfo DEFAULT_APPLICATION_INFO{
     .sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+    .pNext              = nullptr,
     .pApplicationName   = "Application",
-    .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+    .applicationVersion = VK_MAKE_VERSION(0, 0, 1),
     .pEngineName        = "Engine",
-    .engineVersion      = VK_MAKE_VERSION(1, 0, 0),
+    .engineVersion      = VK_MAKE_VERSION(0, 0, 1),
     .apiVersion         = VK_API_VERSION_1_4};
 
 /*
@@ -20,6 +19,12 @@ class InstanceBuilder
 {
   public:
     InstanceBuilder();
+
+    /*
+    Creates a VkInstance. Throws an exception when creation failed.
+    */
+    void build(VkInstance& instance) const;
+
     /*
     Sets the name of the application. Default name is "Application" if no name is provided.
     */
@@ -79,28 +84,11 @@ class InstanceBuilder
     */
     InstanceBuilder& attachDebugMessenger(VkDebugUtilsMessengerCreateInfoEXT& messengerCreateInfo);
 
-    /*
-    Creates a VkInstance. Throws an exception when creation failed.
-    */
-    void build(VkInstance& instance) const;
-
   private:
-    VkApplicationInfo applicationInfo = defaultApplicationInfo;
+    VkApplicationInfo applicationInfo = DEFAULT_APPLICATION_INFO;
 
     VkInstanceCreateInfo createInfo{.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                     .pApplicationInfo = &applicationInfo};
-
-    /*
-    VkStructureType             sType;
-    const void*                 pNext;
-    VkInstanceCreateFlags       flags;
-    const VkApplicationInfo*    pApplicationInfo;
-    uint32_t                    enabledLayerCount;
-    const char* const*          ppEnabledLayerNames;
-    uint32_t                    enabledExtensionCount;
-    const char* const*          ppEnabledExtensionNames;
-    */
-
 
     /*
     Checks if the added layers are supported by the GPU. Throws an

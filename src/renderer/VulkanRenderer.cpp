@@ -2,7 +2,8 @@
 
 #include "output/Logger.h"
 
-VulkanRenderer::VulkanRenderer(Window* const window) : window(window) {}
+VulkanRenderer::VulkanRenderer(Window* const window)
+    : window(window) {}
 
 void VulkanRenderer::init() {
     createInstance();
@@ -19,22 +20,22 @@ const Window* VulkanRenderer::getWindow() const {
 void VulkanRenderer::cleanup() {
     if(swapchain.handle != VK_NULL_HANDLE) {
         swapchain.destroy(device);
-        SLOG_INFO("Cleaned up Swapchain.");
+        SLOG_INFO("Swawpchain cleanup complete.");
     }
 
     if(device != VK_NULL_HANDLE) {
         vkDestroyDevice(device, nullptr);
-        SLOG_INFO("Cleaned up Logical Device.");
+        SLOG_INFO("Logical Device cleanup complete.");
     }
 
     if(surface != VK_NULL_HANDLE) {
         vkDestroySurfaceKHR(instance, surface, nullptr);
-        SLOG_INFO("Cleaned up Surface.");
+        SLOG_INFO("Surface cleanup complete.");
     }
 
     if(instance != VK_NULL_HANDLE) {
         vkDestroyInstance(instance, nullptr);
-        SLOG_INFO("Cleaned up Instance.");
+        SLOG_INFO("Instance cleanup complete.");
     }
 
     SLOG_INFO("Vulkan cleanup complete.");

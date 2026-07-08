@@ -2,10 +2,7 @@
 
 #include "Swapchain.h"
 
-// TODO: create functions "createDefaultSwapchain" and "createFromCreateInfo" as
-//       standalone functions (needs namespace!)
-
-constexpr VkSwapchainCreateInfoKHR defaultSwapchainCreateInfo{
+constexpr VkSwapchainCreateInfoKHR DEFAULT_SWAPCHAIN_CREATE_INFO{
     .sType                 = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
     .pNext                 = nullptr,
     .flags                 = 0,
@@ -24,7 +21,7 @@ constexpr VkSwapchainCreateInfoKHR defaultSwapchainCreateInfo{
     .clipped               = VK_FALSE,
     .oldSwapchain          = VK_NULL_HANDLE};
 
-constexpr VkSurfaceCapabilitiesKHR defaultSurfaceCapabilities{
+constexpr VkSurfaceCapabilitiesKHR DEFAULT_SURFACE_CAPABILITIES{
     .minImageCount           = 0,
     .maxImageCount           = 0,
     .currentExtent           = VkExtent2D{0, 0},
@@ -65,7 +62,7 @@ class SwapchainBuilder
     this function. As this function requires a valid Physical Device and
     Surface, it should only be called after setting those.
     */
-    Swapchain build(const VkDevice& device) const;
+    void build(const VkDevice& device, Swapchain& swapchain) const;
 
     /*
     Sets the Physical Device to be used in the Swapchain creation. If a valid
@@ -281,8 +278,8 @@ class SwapchainBuilder
     SwapchainBuilder& setToDefaultSettings();
 
   private:
-    VkPhysicalDevice         physicalDevice      = VK_NULL_HANDLE;
-    VkSwapchainCreateInfoKHR swapchainCreateInfo = defaultSwapchainCreateInfo;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkSwapchainCreateInfoKHR swapchainCreateInfo = DEFAULT_SWAPCHAIN_CREATE_INFO;
 
     // need to buffer this to avoid that they go out of scope before "build" has been called
     std::vector<uint32_t> queueFamilyIndices;
@@ -290,7 +287,7 @@ class SwapchainBuilder
     // these only get calculated once on surface change and then stored for
     // performance reasons invariant: these contain valid values once a valid
     // physical device and surface are set
-    VkSurfaceCapabilitiesKHR surfaceCapabilities = defaultSurfaceCapabilities;
+    VkSurfaceCapabilitiesKHR surfaceCapabilities = DEFAULT_SURFACE_CAPABILITIES;
     std::vector<VkSurfaceFormatKHR> surfaceFormats;
     std::vector<VkPresentModeKHR>   surfacePresentModes;
 

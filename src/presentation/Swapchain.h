@@ -3,6 +3,11 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+/*
+Wrapper for the VkSwapchainKHR.
+Usage: Create a valid Swapchain handle externally. Then call "retrieveSwapchainImages()"
+to create Image Views for the Images of the Swapchain.
+*/
 struct Swapchain
 {
   public:
@@ -11,9 +16,15 @@ struct Swapchain
     */
     void destroy(VkDevice device);
 
+    /*
+    Retrieves the Images of the Swapchain and creates Image Views for them.
+    Will throw an exception if either the Device or the Swapchain handle is invalid.
+    */
+    void retrieveSwapchainImages(VkDevice device);
+
     VkSwapchainKHR           handle = VK_NULL_HANDLE;
     std::vector<VkImage>     images{};
     std::vector<VkImageView> imageViews;
     VkFormat                 imageFormat = VK_FORMAT_UNDEFINED;
-    VkExtent2D               extent{0, 0};
+    VkExtent2D               imageExtent{0, 0};
 };
