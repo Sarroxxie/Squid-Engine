@@ -14,7 +14,7 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
-     * 2.5. write abstraction for image view creation
+     * 2.5. write shader auto compiler
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
      * 5. add ImGui (maybe set context per Window)
