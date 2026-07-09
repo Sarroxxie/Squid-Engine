@@ -7,7 +7,7 @@
 ImageViewBuilder::ImageViewBuilder() {}
 
 ImageViewBuilder::ImageViewBuilder(const VkImage image) {
-    imageViewCreateInfo.image = image;
+    setImage(image);
 }
 
 void ImageViewBuilder::build(const VkDevice& device, VkImageView& imageView) const {
@@ -21,6 +21,11 @@ void ImageViewBuilder::build(const VkDevice& device, VkImageView& imageView) con
                                       "Failed to create Image View.");
 
     SLOG_INFO("Successfully created Image View.");
+}
+
+ImageViewBuilder& ImageViewBuilder::setImageViewCreateInfo(const VkImageViewCreateInfo imageViewCreateInfo) {
+    this->imageViewCreateInfo = imageViewCreateInfo;
+    return *this;
 }
 
 ImageViewBuilder& ImageViewBuilder::setFlags(const VkImageViewCreateFlags flags) {

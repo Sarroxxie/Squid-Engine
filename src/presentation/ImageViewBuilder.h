@@ -2,20 +2,8 @@
 
 #include <vulkan/vulkan.h>
 
-/*
-TODO: the basic idea here is to support image view building like the other
-builders (with a builder class) but also to support static functions for default
-types -> ImageViewBuilder::createImageView(VkDevice device, VkImage image, ...)
-      to cover the most common cases (and also "createFromCreateInfo")
-
-      -> the functions in this file should handle errors (image is empty, device
-is empty, createImageView failing...)
-      -> use class for default builder case
-      -> use namespace for static creation
-*/
-
 // TODO: as we use more different mapping, create them here instead of in the
-// code that calls ImageViewBuilder::build()
+//       code that calls ImageViewBuilder::build()
 namespace ComponentMappings {
 
 constexpr VkComponentMapping RGBA{.r = VK_COMPONENT_SWIZZLE_IDENTITY,
@@ -52,27 +40,68 @@ class ImageViewBuilder
 {
   public:
     ImageViewBuilder();
+    /*
+    Automatically sets the Image for which the Image View gets created.
+    */
     ImageViewBuilder(const VkImage image);
 
     // TODO: for the future: check if we need to access the createInfo again
     //       when using the image view
-    //       -> could consider to create a "ImageView" class that stores these
-    //          and return it instead
+    //       -> could consider creating an "ImageView" class that stores these
+    //          and return that class instead of the VkImageView
     void build(const VkDevice& device, VkImageView& imageView) const;
 
-    // TODO: write documentation!
+    /*
+    Sets the Image View Create Info to be used in the Image View creation.
+    */
+    ImageViewBuilder& setImageViewCreateInfo(const VkImageViewCreateInfo imageViewCreateInfo);
 
+    /*
+    Sets the flags to be used in the Image View creation.
+    */
     ImageViewBuilder& setFlags(const VkImageViewCreateFlags flags);
+    /*
+    Sets the Image for which the Image View gets created.
+    */
     ImageViewBuilder& setImage(const VkImage image);
+    /*
+    Sets the View Type for the Image View.
+    */
     ImageViewBuilder& setViewType(const VkImageViewType viewType);
+    /*
+    Sets the Format for the Image View.
+    */
     ImageViewBuilder& setFormat(const VkFormat format);
+    /*
+    Sets the Component Mapping for the Image View.
+    */
     ImageViewBuilder& setComponents(const VkComponentMapping components);
 
+    /*
+    Sets the Subresource Range for the Image View. This contains the Aspect
+    Mask, the Base Mip Level, the Mip Level Count, the Base Array Layer and the
+    Base Array Layer Count.
+    */
     ImageViewBuilder& setSubresourceRange(const VkImageSubresourceRange subresourceRange);
+    /*
+    Sets the Aspect Mask for the Image View.
+    */
     ImageViewBuilder& setAspectMask(const VkImageAspectFlags aspectMask);
+    /*
+    Sets the Base Mip Level for the Image View.
+    */
     ImageViewBuilder& setBaseMipLevel(const uint32_t baseMipLevel);
+    /*
+    Sets the Mip Level Count for the Image View.
+    */
     ImageViewBuilder& setLevelCount(const uint32_t levelCount);
+    /*
+    Sets the Base Array Layer for the Image View.
+    */
     ImageViewBuilder& setBaseArrayLayer(const uint32_t baseArrayLayer);
+    /*
+    Sets the Array Layer Count for the Image View.
+    */
     ImageViewBuilder& setLayerCount(const uint32_t layerCount);
 
   private:
