@@ -6,8 +6,6 @@
 #include "ImageViewBuilder.h"
 #include <algorithm>
 
-// template void check_t<std::runtime_error>(const bool result, const std::string message);
-
 SwapchainBuilder::SwapchainBuilder() {}
 
 SwapchainBuilder::SwapchainBuilder(const VkPhysicalDevice& physicalDevice,
