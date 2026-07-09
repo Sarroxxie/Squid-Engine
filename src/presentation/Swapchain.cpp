@@ -41,7 +41,7 @@ void Swapchain::retrieveSwapchainImages(VkDevice device) {
     for(size_t i = 0; i < images.size(); i++) {
         imageViewBuilder.setImage(images[i]);
 
-        SLOG_DEBUG("Attempting to create Image View for swapchain image " << i << ".");
+        SLOG_DEBUG("Attempting to create Image View for Swapchain Image " << i << ".");
         imageViewBuilder.build(device, imageViews[i]);
     }
     SLOG_INFO("Successfully retrieved Swapchain Images.");
