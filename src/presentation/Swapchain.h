@@ -14,13 +14,13 @@ struct Swapchain
     /*
     Destroys the Swapchain via Vulkan API call.
     */
-    void destroy(VkDevice device);
+    void destroy(const VkDevice& device);
 
     /*
     Retrieves the Images of the Swapchain and creates Image Views for them.
     Will throw an exception if either the Device or the Swapchain handle is invalid.
     */
-    void retrieveSwapchainImages(VkDevice device);
+    void retrieveSwapchainImages(const VkDevice& device);
 
     VkSwapchainKHR           handle = VK_NULL_HANDLE;
     std::vector<VkImage>     images{};

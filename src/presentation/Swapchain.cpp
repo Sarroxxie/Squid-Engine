@@ -5,7 +5,7 @@
 #include "Exceptions.h"
 #include "ImageViewBuilder.h"
 
-void Swapchain::destroy(VkDevice device) {
+void Swapchain::destroy(const VkDevice& device) {
     if(handle != VK_NULL_HANDLE) {
         vkDestroySwapchainKHR(device, handle, nullptr);
         SLOG_INFO("Destroyed Swapchain.");
@@ -17,7 +17,7 @@ void Swapchain::destroy(VkDevice device) {
     }
 }
 
-void Swapchain::retrieveSwapchainImages(VkDevice device) {
+void Swapchain::retrieveSwapchainImages(const VkDevice& device) {
     check<SwapchainImageRetrievalException>(device != VK_NULL_HANDLE, "Device is invalid.");
     check<SwapchainImageRetrievalException>(handle != VK_NULL_HANDLE, "Swapchain is invalid.");
 
