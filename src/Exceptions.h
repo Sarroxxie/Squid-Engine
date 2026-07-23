@@ -41,3 +41,5 @@ GENERATE_EXCEPTION(DebugUtilsMessengerCreationException);
 GENERATE_EXCEPTION(QueueFamiliyIndexException);
 
 GENERATE_EXCEPTION(ImageViewCreationException);
+
+GENERATE_EXCEPTION(ShaderCreationException);

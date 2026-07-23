@@ -30,6 +30,9 @@ src/setup/PhysicalDeviceSelector.cpp
 src/setup/QueueFamiliyIndices.h
 src/setup/QueueFamilyIndices.cpp
 
+src/pipeline/ShaderModule.h
+src/pipeline/ShaderModule.cpp
+
 src/presentation/Swapchain.h
 src/presentation/Swapchain.cpp
 src/presentation/SwapchainBuilder.h
@@ -95,3 +98,23 @@ target_link_libraries(SquidEngine glm)
 
 add_subdirectory(${VKBOOTSTRAP_DIR})
 target_link_libraries(SquidEngine vk-bootstrap::vk-bootstrap)
+
+# Create directory for compiled shaders
+file(MAKE_DIRECTORY "./shaders/spv")
+
+# Pass the path to the VulkanSDK directory to the programm through a compile macro (after replacing backslashes with slashes)
+set(VulkanSDKPath $ENV{VULKAN_SDK})
+string(REGEX REPLACE "\\\\" "/" VulkanSDKPath ${VulkanSDKPath})
+target_compile_definitions(SquidEngine PRIVATE "VULKAN_SDK_PATH=\"${VulkanSDKPath}\"")
+
+set(ProjectRoot ${PROJECT_SOURCE_DIR})
+string(REGEX REPLACE "\\\\" "/" ProjectRoot ${ProjectRoot})
+target_compile_definitions(SquidEngine PRIVATE "PROJECT_ROOT_PATH=\"${ProjectRoot}\"")
+
+set(ShaderSourceDirectory ${ProjectRoot})
+string(APPEND ShaderSourceDirectory "/shaders/slang")
+target_compile_definitions(SquidEngine PRIVATE "SHADER_SOURCE_DIRECTORY_PATH=\"${ShaderSourceDirectory}\"")
+
+set(ShaderCompileDirectory ${ProjectRoot})
+string(APPEND ShaderCompileDirectory "/shaders/spv")
+target_compile_definitions(SquidEngine PRIVATE "SHADER_COMPILE_DIRECTORY_PATH=\"${ShaderCompileDirectory}\"")
