@@ -4,8 +4,12 @@
 #include "output/VulkanCheck.h"
 #include "Exceptions.h"
 
-// TODO: need to differentiate between POSIX and Windows here!
+// the _WIN32 macro includes 64-bit systems as well
+#ifdef _WIN32
+constexpr char DIRECTORY_SEPARATOR[] = "\\";
+#else
 constexpr char DIRECTORY_SEPARATOR[] = "/";
+#endif
 
 ShaderModule::ShaderModule() {}
 
