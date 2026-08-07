@@ -30,8 +30,11 @@ src/setup/PhysicalDeviceSelector.cpp
 src/setup/QueueFamiliyIndices.h
 src/setup/QueueFamilyIndices.cpp
 
-src/pipeline/ShaderModule.h
-src/pipeline/ShaderModule.cpp
+src/shader/CommandLineShaderCompiler.h
+src/shader/CommandLineShaderCompiler.cpp
+src/shader/ShaderCompiler.h
+src/shader/ShaderModule.h
+src/shader/ShaderModule.cpp
 
 src/presentation/Swapchain.h
 src/presentation/Swapchain.cpp

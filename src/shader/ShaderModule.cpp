@@ -4,25 +4,40 @@
 #include "output/VulkanCheck.h"
 #include "Exceptions.h"
 
-// the _WIN32 macro includes 64-bit systems as well
-#ifdef _WIN32
-constexpr char DIRECTORY_SEPARATOR[] = "\\";
-#else
-constexpr char DIRECTORY_SEPARATOR[] = "/";
-#endif
-
 ShaderModule::ShaderModule() {}
 
-ShaderModule::ShaderModule(std::filesystem::path sourceFilePath) {
+ShaderModule::ShaderModule(const std::filesystem::path& sourceFilePath) {
     setSourceFilePath(sourceFilePath);
 }
 
-ShaderModule::ShaderModule(std::string sourceFilePath)
+ShaderModule::ShaderModule(const std::string& sourceFilePath)
     : ShaderModule(std::filesystem::path(sourceFilePath)) {}
 
-void ShaderModule::setSourceFilePath(std::filesystem::path sourceFilePath) {
+ShaderModule::ShaderModule(const std::filesystem::path&   sourceFilePath,
+                           const std::vector<std::string> entryPoints)
+    : ShaderModule(sourceFilePath) {
+    setEntryPoints(entryPoints);
+}
+
+ShaderModule::ShaderModule(const std::string&             sourceFilePath,
+                           const std::vector<std::string> entryPoints)
+    : ShaderModule(std::filesystem::path(sourceFilePath), entryPoints) {}
+
+VkShaderModule ShaderModule::getHandle() const {
+    return handle;
+}
+
+std::filesystem::path ShaderModule::getSourceFilePath() const {
+    return sourceFilePath;
+}
+
+std::vector<std::string> ShaderModule::getEntryPoints() {
+    return entryPoints;
+}
+
+void ShaderModule::setSourceFilePath(const std::filesystem::path& sourceFilePath) {
     // choose either backslashes (on Windows) or forward slashes (on POSIX)
-    std::filesystem::path path = sourceFilePath.make_preferred();
+    std::filesystem::path path = std::filesystem::path(sourceFilePath).make_preferred();
 
     if(path.is_absolute()) {
         // check if the shader file exists
@@ -49,20 +64,22 @@ void ShaderModule::setSourceFilePath(std::filesystem::path sourceFilePath) {
     }
 }
 
-void ShaderModule::setSourceFilePath(std::string sourceFilePath) {
+void ShaderModule::setSourceFilePath(const std::string& sourceFilePath) {
     setSourceFilePath(std::filesystem::path(sourceFilePath));
 }
 
-void ShaderModule::compile() {
-    std::string command =
-        "slangc " + std::string(SHADER_SOURCE_DIRECTORY_PATH)
-        + DIRECTORY_SEPARATOR + sourceFilePath.string() + " -target spirv -o "
-        + std::string(SHADER_COMPILE_DIRECTORY_PATH) + std::string(DIRECTORY_SEPARATOR)
-        + sourceFilePath.parent_path().string() + sourceFilePath.stem().string() + ".spv";
+void ShaderModule::addEntryPoint(const std::string& entryPoint) {
+    entryPoints.push_back(entryPoint);
+}
 
+void ShaderModule::addEntryPoints(const std::vector<std::string>& entryPoints) {
+    this->entryPoints.reserve(this->entryPoints.size() + entryPoints.size());
+    this->entryPoints.insert(std::end(this->entryPoints),
+                             std::begin(entryPoints), std::end(entryPoints));
+}
 
-    SLOG_INFO("Compiling Shader \"" << sourceFilePath.string() << "\"");
-    system(command.c_str());
+void ShaderModule::setEntryPoints(const std::vector<std::string>& entryPoints) {
+    this->entryPoints = std::vector<std::string>(entryPoints);
 }
 
 void ShaderModule::destroy(VkDevice& device) {

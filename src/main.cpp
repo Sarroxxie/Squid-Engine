@@ -3,7 +3,8 @@
 
 #include <filesystem>
 #include <iostream>
-#include "pipeline/ShaderModule.h"
+#include "shader/ShaderModule.h"
+#include "shader/CommandLineShaderCompiler.h"
 #include "output/Logger.h"
 
 // how to include the Vulkan Memory Allocator VMA (if it is installed with the
@@ -31,9 +32,12 @@ int main() {
      */
 
     try {
-        ShaderModule module = ShaderModule(std::string(
-            "F:/programming/Squid-Engine/shaders/slang/rainbow_triangle.slang"));
-        module.compile();
+        CommandLineShaderCompiler compiler = CommandLineShaderCompiler();
+        ShaderModule              module =
+            ShaderModule(std::string("rainbow_triangle.slang"),
+                         std::vector<std::string>{"vertMain", "fragMain"});
+        compiler.compileShader(module);
+        // TODO: need to destroy shader module after uploading it to GPU
     } catch(std::exception& e) {
         SLOG_FATAL(e.what());
         exit(EXIT_FAILURE);
