@@ -27,15 +27,15 @@ class DefaultVulkanRenderer : public VulkanRenderer
 
     // Uses the InstanceBuilder to create the VkInstance and registers
     // validation layers if "USE_DEBUG_UTILS" is set to true.
-    void createInstance();
+    void createInstance() override;
     // Returns the instance extensions that are required by GLFW.
     std::vector<const char*> getRequiredExtensions();
     // Creates the Window Surface.
-    void createSurface();
+    void createSurface() override;
     // Uses the DefaultPhysicalDeviceSelector to select the most suitable GPU.
-    void selectPhysicalDevice();
+    void selectPhysicalDevice() override;
     // Uses the DeviceBuilder to create the VkDevice.
-    void createDevice();
+    void createDevice() override;
     // Uses the SwapchainBuilder to create the VkSwapchainKHR.
-    void createSwapchain();
+    void createSwapchain() override;
 };
