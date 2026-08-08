@@ -23,8 +23,11 @@ int main() {
      * 2.5. write shader abstraction (autocompile can be added later on)
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
+     * 4.5 multiple windows (includes multiple swapchains)
+     *     -> "Application" can have multiple windows (but some Vulkan stuff has
+     *        to be shared!)
      * 5. add ImGui (maybe set context per Window)
-     * 6. Shadertoy (use Text Editor Widget from ImGui?)
+     * 6. Shadertoy Application (frag shader and/or compute shader)
      *
      *
      * -> also split application and rendering! application should handle inputs
