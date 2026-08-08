@@ -26,7 +26,7 @@ class VulkanRenderer
     /*
     Destroys all used resources.
     */
-    void cleanup();
+    virtual void cleanup();
 
   protected:
     Window* const window;

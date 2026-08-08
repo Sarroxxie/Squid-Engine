@@ -17,7 +17,7 @@ class DefaultVulkanRenderer : public VulkanRenderer
     // Creates a DefaultApplication with the option of enabling validation layers.
     DefaultVulkanRenderer(Window* const window, bool useDebugUtils);
     // Destroys all used resources.
-    void cleanup();
+    void cleanup() override;
 
   private:
     // whether to use validation layers
