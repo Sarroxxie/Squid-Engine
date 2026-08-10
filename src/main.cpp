@@ -2,7 +2,6 @@
 #include <vulkan/vulkan.h>
 
 #include <filesystem>
-#include <iostream>
 #include "shader/ShaderModule.h"
 #include "shader/CommandLineShaderCompiler.h"
 #include "output/Logger.h"

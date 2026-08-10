@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24...4.2)
+cmake_minimum_required(VERSION 3.25...4.2)
 project(SquidEngine)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -54,8 +54,6 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT S
 # sets compiler to C++ 23
 target_compile_features(SquidEngine PUBLIC cxx_std_23)
 
-set(PROJECT_ROOT_DIR ${PROJECT_SOURCE_DIR})
-
 # Constants for lib includes
 set(GLFW_DIR libs/glfw/)
 set(IMGUI_DIR libs/imgui/)
@@ -70,7 +68,7 @@ find_package(Vulkan REQUIRED)
 
 # ImGUI
 target_include_directories(SquidEngine PUBLIC
-${PROJECT_ROOT_DIR}/src # include so local includes are relative to sources root
+${PROJECT_SOURCE_DIR}/src # include so local includes are relative to sources root
 ${IMGUI_DIR}
 ${IMGUI_DIR}/backends
 )
@@ -103,21 +101,68 @@ add_subdirectory(${VKBOOTSTRAP_DIR})
 target_link_libraries(SquidEngine vk-bootstrap::vk-bootstrap)
 
 # Create directory for compiled shaders
-file(MAKE_DIRECTORY "./shaders/spv")
+file(MAKE_DIRECTORY "./shaders/spv") #TODO: should store the path somewhere as it is also being used later!
 
-# Pass the path to the VulkanSDK directory to the programm through a compile macro (after replacing backslashes with slashes)
+# changes connectors to use forward slashes in paths
+function(to_posix_path PATH)
+    string(REGEX REPLACE "\\\\" "/" ${PATH} ${${PATH}})
+    return(PROPAGATE ${PATH})
+endfunction()
+
+# changes connectors to use backslashes in paths
+function(to_windows_path PATH)
+    string(REGEX REPLACE "/" "\\\\\\\\" ${PATH} ${${PATH}})
+    return(PROPAGATE ${PATH})
+endfunction()
+
+# uses slashes for posix paths and backslashes for windows paths
+function(make_path_platform_dependent PATH)
+    to_posix_path(${PATH})
+    IF (WIN32)
+        to_windows_path(${PATH})
+    ENDIF()
+    return(PROPAGATE ${PATH})
+endfunction()
+
+# NOTE: For some reason, if using the "to_windows_path" function for an ending slash, cmake appends 
+#       a different number of backslashes than for slashes that are not at the end of the string.
+#       This function is designed to be used AFTER "make_path_platform_dependent" has been called!
+function(append_platform_dependent_connector PATH)
+    if (WIN32)
+	    string(APPEND ${PATH} "\\\\")
+	ELSE()
+	    string(APPEND ${PATH} "/")
+	ENDIF()
+	return(PROPAGATE ${PATH})
+endfunction()
+
+# Pass various paths to the programm through compile macros
+block()
 set(VulkanSDKPath $ENV{VULKAN_SDK})
-string(REGEX REPLACE "\\\\" "/" VulkanSDKPath ${VulkanSDKPath})
-target_compile_definitions(SquidEngine PRIVATE "VULKAN_SDK_PATH=\"${VulkanSDKPath}\"")
+    make_path_platform_dependent(VulkanSDKPath)
+	append_platform_dependent_connector(VulkanSDKPath)
+    target_compile_definitions(SquidEngine PRIVATE "VULKAN_SDK_PATH=\"${VulkanSDKPath}\"")
+endblock()
 
-set(ProjectRoot ${PROJECT_SOURCE_DIR})
-string(REGEX REPLACE "\\\\" "/" ProjectRoot ${ProjectRoot})
-target_compile_definitions(SquidEngine PRIVATE "PROJECT_ROOT_PATH=\"${ProjectRoot}\"")
+block()
+    set(ProjectRoot ${PROJECT_SOURCE_DIR})
+    make_path_platform_dependent(ProjectRoot)
+	append_platform_dependent_connector(ProjectRoot)
+    target_compile_definitions(SquidEngine PRIVATE "PROJECT_ROOT_PATH=\"${ProjectRoot}\"")
+endblock()
 
-set(ShaderSourceDirectory ${ProjectRoot})
-string(APPEND ShaderSourceDirectory "/shaders/slang")
-target_compile_definitions(SquidEngine PRIVATE "SHADER_SOURCE_DIRECTORY_PATH=\"${ShaderSourceDirectory}\"")
+block()
+    set(ShaderSourceDirectory ${PROJECT_SOURCE_DIR})
+    string(APPEND ShaderSourceDirectory "/shaders/slang")
+    make_path_platform_dependent(ShaderSourceDirectory)
+	append_platform_dependent_connector(ShaderSourceDirectory)
+    target_compile_definitions(SquidEngine PRIVATE "SHADER_SOURCE_DIRECTORY_PATH=\"${ShaderSourceDirectory}\"")
+endblock()
 
-set(ShaderCompileDirectory ${ProjectRoot})
-string(APPEND ShaderCompileDirectory "/shaders/spv")
-target_compile_definitions(SquidEngine PRIVATE "SHADER_COMPILE_DIRECTORY_PATH=\"${ShaderCompileDirectory}\"")
+block()
+    set(ShaderCompileDirectory ${PROJECT_SOURCE_DIR})
+    string(APPEND ShaderCompileDirectory "/shaders/spv")
+    make_path_platform_dependent(ShaderCompileDirectory)
+	append_platform_dependent_connector(ShaderCompileDirectory)
+    target_compile_definitions(SquidEngine PRIVATE "SHADER_COMPILE_DIRECTORY_PATH=\"${ShaderCompileDirectory}\"")
+endblock()
