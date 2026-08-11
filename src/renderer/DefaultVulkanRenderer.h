@@ -38,4 +38,6 @@ class DefaultVulkanRenderer : public VulkanRenderer
     void createDevice() override;
     // Uses the SwapchainBuilder to create the VkSwapchainKHR.
     void createSwapchain() override;
+
+    void createGraphicsPipeline() override;
 };

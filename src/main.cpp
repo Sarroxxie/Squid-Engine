@@ -19,7 +19,6 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
-     * 2.5. write shader abstraction (autocompile can be added later on)
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
      * 4.5 multiple windows (includes multiple swapchains)
@@ -32,18 +31,6 @@ int main() {
      * -> also split application and rendering! application should handle inputs
      * (and physics?)
      */
-
-    try {
-        CommandLineShaderCompiler compiler = CommandLineShaderCompiler();
-        ShaderModule              module =
-            ShaderModule(std::string("rainbow_triangle.slang"),
-                         std::vector<std::string>{"vertMain", "fragMain"});
-        compiler.compileShader(module);
-        // TODO: need to destroy shader module after uploading it to GPU
-    } catch(std::exception& e) {
-        SLOG_FATAL(e.what());
-        exit(EXIT_FAILURE);
-    }
 
     Window window(WIDTH, HEIGHT, APP_NAME);
 

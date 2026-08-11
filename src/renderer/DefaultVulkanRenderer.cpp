@@ -3,6 +3,8 @@
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
+#include "shader/CommandLineShaderCompiler.h"
+#include "shader/ShaderStageBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
 #include "Exceptions.h"
@@ -87,7 +89,8 @@ void DefaultVulkanRenderer::selectPhysicalDevice() {
 void DefaultVulkanRenderer::createDevice() {
     DeviceBuilder builder(physicalDevice, surface);
     // required for swap chain
-    const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                                 VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME};
     QueueFamilyIndices indices;
     builder.requestExtensions(extensions);
     // TODO: may want to specify features here that we will be using
@@ -105,4 +108,21 @@ void DefaultVulkanRenderer::createSwapchain() {
     swapchainBuilder.build(device, swapchain);
     // we need this to be able to later access the Image Views of the Swapchain
     swapchain.retrieveSwapchainImages(device);
+}
+
+void DefaultVulkanRenderer::createGraphicsPipeline() {
+    CommandLineShaderCompiler compiler = CommandLineShaderCompiler();
+    // TODO: would like this to be a shared pointer, so the ShaderCompiler does
+    // not get out of scope (we will need it to rebuild the graphics pipeline on shader reload)
+    shaderCompiler      = &compiler;
+    ShaderModule module = ShaderModule(
+        std::string("rainbow_triangle.slang"),
+        std::vector<ShaderEntryPoint>{{"vertMain", VK_SHADER_STAGE_VERTEX_BIT},
+                                      {"fragMain", VK_SHADER_STAGE_FRAGMENT_BIT}});
+    shaderCompiler->compileShader(module);
+
+    std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
+        ShaderStageBuilder::buildShaderStages(device, module);
+
+    // TODO: create the remaining graphics pipeline!
 }

@@ -5,7 +5,7 @@
 #include "Exceptions.h"
 
 ShaderModule::ShaderModule(const std::filesystem::path&   sourceFilePath,
-                           const std::vector<std::string> entryPoints) {
+                           const std::vector<ShaderEntryPoint> entryPoints) {
     // choose either backslashes (on Windows) or forward slashes (on POSIX)
     std::filesystem::path path = std::filesystem::path(sourceFilePath).make_preferred();
 
@@ -21,20 +21,18 @@ ShaderModule::ShaderModule(const std::filesystem::path&   sourceFilePath,
             + SHADER_SOURCE_DIRECTORY_PATH + "\").");
 
     this->sourceFilePath = path;
-    this->entryPoints    = std::vector<std::string>(entryPoints);
+    this->entryPoints    = std::vector<ShaderEntryPoint>(entryPoints);
 }
 
 ShaderModule::ShaderModule(const std::string&             sourceFilePath,
-                           const std::vector<std::string> entryPoints)
+                           const std::vector<ShaderEntryPoint> entryPoints)
     : ShaderModule(std::filesystem::path(sourceFilePath), entryPoints) {}
 
-VkShaderModule ShaderModule::getHandle() const {
-    return handle;
-}
-
+/*
 void ShaderModule::destroy(VkDevice& device) {
     if(handle != VK_NULL_HANDLE) {
         vkDestroyShaderModule(device, handle, nullptr);
         SLOG_INFO("Destroyed Shader " << sourceFilePath.string());
     }
 }
+*/

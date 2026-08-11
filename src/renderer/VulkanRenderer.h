@@ -2,6 +2,8 @@
 
 #include "application/Window.h"
 #include "presentation/Swapchain.h"
+#include "shader/ShaderCompiler.h"
+#include <memory>
 
 /*
 This class keeps track of all Vulkan objects that are mandatory for all usecases.
@@ -40,6 +42,8 @@ class VulkanRenderer
     VkQueue graphicsQueue = VK_NULL_HANDLE;
     VkQueue presentQueue  = VK_NULL_HANDLE;
 
+    ShaderCompiler* shaderCompiler;
+
   private:
     /*
     Creates the VkInstance. After the execution of this function, a valid
@@ -66,4 +70,6 @@ class VulkanRenderer
     VkSwapchainKHR must be stored in the variable "swapchain".
     */
     virtual void createSwapchain() = 0;
+    // TODO: which resources do we need to store (and destroy)?
+    virtual void createGraphicsPipeline() = 0;
 };

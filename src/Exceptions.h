@@ -43,3 +43,4 @@ GENERATE_EXCEPTION(QueueFamiliyIndexException);
 GENERATE_EXCEPTION(ImageViewCreationException);
 
 GENERATE_EXCEPTION(ShaderCreationException);
+GENERATE_EXCEPTION(ShaderModuleCreationException);

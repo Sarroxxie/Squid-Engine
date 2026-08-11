@@ -25,8 +25,8 @@ bool CommandLineShaderCompiler::compileShader(ShaderModule& shaderModule) {
     
     // add entry points
     command += " -fvk-use-entrypoint-name";
-    for(std::string entryPoint : shaderModule.entryPoints) {
-        command += " -entry " + entryPoint;
+    for(ShaderEntryPoint entryPoint : shaderModule.entryPoints) {
+        command += " -entry " + entryPoint.name;
     }
     
     // specify output file
