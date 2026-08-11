@@ -8,17 +8,6 @@
 class ShaderModule
 {
   public:
-    ShaderModule();
-    /*
-    Creates a ShaderModule and sets its path to the shader source code. The
-    specified path has to point to a valid file relative to "SHADER_SOURCE_DIRECTORY_PATH".
-    */
-    ShaderModule(const std::filesystem::path& sourceFilePath);
-    /*
-    Creates a ShaderModule and sets its path to the shader source code. The
-    specified path has to point to a valid file relative to "SHADER_SOURCE_DIRECTORY_PATH".
-    */
-    ShaderModule(const std::string& sourceFilePath);
     /*
     Creates a ShaderModule and sets its path to the shader source code. The
     specified path has to point to a valid file relative to "SHADER_SOURCE_DIRECTORY_PATH".
