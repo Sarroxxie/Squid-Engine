@@ -1,10 +1,7 @@
 #pragma once
 
-#include "ShaderCompiler.h"
+#include "ShaderModule.h"
 
-// TODO: add docs to the class
-class CommandLineShaderCompiler : public ShaderCompiler
-{
-  public:
-    bool compileShader(ShaderModule& shaderModule);
-};
+namespace CommandLineShaderCompiler {
+      bool compileShader(const ShaderModule& shaderModule);
+}

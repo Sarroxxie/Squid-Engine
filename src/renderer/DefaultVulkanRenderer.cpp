@@ -19,6 +19,8 @@ DefaultVulkanRenderer::DefaultVulkanRenderer(Window* const window, bool useDebug
         init();
         // To get a working debugMessenger, we need the call to the non-default
         // constructor which requires a valid instance.
+        // TODO: create this as soon as possible (after Instance creation)!
+        //       -> might need to modify the "init()" structure or add VLs to the "VulkanRenderer"
         if(USE_DEBUG_UTILS)
             debugMessenger = DebugUtilsMessenger(instance);
     } catch(std::exception& e) {
@@ -111,15 +113,11 @@ void DefaultVulkanRenderer::createSwapchain() {
 }
 
 void DefaultVulkanRenderer::createGraphicsPipeline() {
-    CommandLineShaderCompiler compiler = CommandLineShaderCompiler();
-    // TODO: would like this to be a shared pointer, so the ShaderCompiler does
-    // not get out of scope (we will need it to rebuild the graphics pipeline on shader reload)
-    shaderCompiler      = &compiler;
     ShaderModule module = ShaderModule(
         std::string("rainbow_triangle.slang"),
         std::vector<ShaderEntryPoint>{{"vertMain", VK_SHADER_STAGE_VERTEX_BIT},
                                       {"fragMain", VK_SHADER_STAGE_FRAGMENT_BIT}});
-    shaderCompiler->compileShader(module);
+    CommandLineShaderCompiler::compileShader(module);
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
         ShaderStageBuilder::buildShaderStages(device, module);

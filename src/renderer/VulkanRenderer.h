@@ -2,7 +2,6 @@
 
 #include "application/Window.h"
 #include "presentation/Swapchain.h"
-#include "shader/ShaderCompiler.h"
 #include <memory>
 
 /*
@@ -41,8 +40,6 @@ class VulkanRenderer
 
     VkQueue graphicsQueue = VK_NULL_HANDLE;
     VkQueue presentQueue  = VK_NULL_HANDLE;
-
-    ShaderCompiler* shaderCompiler;
 
   private:
     /*

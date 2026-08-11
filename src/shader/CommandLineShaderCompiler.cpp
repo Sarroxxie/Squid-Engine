@@ -2,7 +2,7 @@
 
 #include "output/Logger.h"
 
-bool CommandLineShaderCompiler::compileShader(ShaderModule& shaderModule) {
+bool CommandLineShaderCompiler::compileShader(const ShaderModule& shaderModule) {
     // TODO: need to generalize the command
     
     /*
