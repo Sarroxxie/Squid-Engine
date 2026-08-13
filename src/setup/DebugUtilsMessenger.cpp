@@ -11,9 +11,23 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
               const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
               void*                                       userData) {
 
-    // TODO: should map message severity to logger macro
-    //       -> also print message type
-    SLOG_INFO("VL: " << callbackData->pMessage);
+    // TODO: should also print message type
+    std::string message = "VL  |  " + std::string(callbackData->pMessage);
+
+    switch (messageSeverity) {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            SLOG_ERROR(message);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            SLOG_WARNING(message);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            SLOG_INFO(message);
+            break;
+        default:
+            SLOG_VERBOSE(message);
+            break;
+    }
 
     return VK_FALSE;
 }
