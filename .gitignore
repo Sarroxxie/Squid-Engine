@@ -9,6 +9,9 @@ cmake-build-release
 build/
 out/
 
+# shader compile directory
+shaders/spv/
+
 #ImGUI
 imgui.ini
 

@@ -2,6 +2,7 @@
 
 #include "application/Window.h"
 #include "presentation/Swapchain.h"
+#include <memory>
 
 /*
 This class keeps track of all Vulkan objects that are mandatory for all usecases.
@@ -26,7 +27,7 @@ class VulkanRenderer
     /*
     Destroys all used resources.
     */
-    void cleanup();
+    virtual void cleanup();
 
   protected:
     Window* const window;
@@ -66,4 +67,6 @@ class VulkanRenderer
     VkSwapchainKHR must be stored in the variable "swapchain".
     */
     virtual void createSwapchain() = 0;
+    // TODO: which resources do we need to store (and destroy)?
+    virtual void createGraphicsPipeline() = 0;
 };
