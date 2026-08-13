@@ -3,7 +3,7 @@
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
-#include "shader/CommandLineShaderCompiler.h"
+#include "shader/ShaderCompiler.h"
 #include "shader/ShaderStageBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
@@ -113,11 +113,14 @@ void DefaultVulkanRenderer::createSwapchain() {
 }
 
 void DefaultVulkanRenderer::createGraphicsPipeline() {
+    // TODO: create a single file that contains all necessary functions with a
+    //       namespace, so the hardcoded stuff happens elsewhere
+    //       -> ShaderStages, Pipeline Setup, Render Pass?
     ShaderModule module = ShaderModule(
         std::string("rainbow_triangle.slang"),
         std::vector<ShaderEntryPoint>{{"vertMain", VK_SHADER_STAGE_VERTEX_BIT},
                                       {"fragMain", VK_SHADER_STAGE_FRAGMENT_BIT}});
-    CommandLineShaderCompiler::compileShader(module);
+    ShaderCompiler::CommandLine::compile(module);
 
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
         ShaderStageBuilder::buildShaderStages(device, module);

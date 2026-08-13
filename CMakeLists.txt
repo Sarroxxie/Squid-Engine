@@ -30,8 +30,8 @@ src/setup/PhysicalDeviceSelector.cpp
 src/setup/QueueFamiliyIndices.h
 src/setup/QueueFamilyIndices.cpp
 
-src/shader/CommandLineShaderCompiler.h
-src/shader/CommandLineShaderCompiler.cpp
+src/shader/ShaderCompiler.h
+src/shader/ShaderCompiler.cpp
 src/shader/ShaderStageBuilder.h
 src/shader/ShaderStageBuilder.cpp
 src/shader/ShaderModule.h

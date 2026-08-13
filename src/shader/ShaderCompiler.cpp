@@ -1,8 +1,8 @@
-#include "CommandLineShaderCompiler.h"
+#include "ShaderCompiler.h"
 
 #include "output/Logger.h"
 
-bool CommandLineShaderCompiler::compileShader(const ShaderModule& shaderModule) {
+bool ShaderCompiler::CommandLine::compile(const ShaderModule& shaderModule) {
     // TODO: need to generalize the command
     
     /*
