@@ -1,6 +1,8 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "output/Logger.h"
+
 // how to include the Vulkan Memory Allocator VMA (if it is installed with the
 // VulkanSDK)
 // #include <vma/vk_mem_alloc.h>
@@ -14,11 +16,13 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
-     * 2.5. write shader auto compiler
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
+     * 4.5 multiple windows (includes multiple swapchains)
+     *     -> "Application" can have multiple windows (but some Vulkan stuff has
+     *        to be shared!)
      * 5. add ImGui (maybe set context per Window)
-     * 6. Shadertoy (use Text Editor Widget from ImGui?)
+     * 6. Shadertoy Application (frag shader and/or compute shader)
      *
      *
      * -> also split application and rendering! application should handle inputs

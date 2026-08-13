@@ -11,7 +11,7 @@ creation, device selection, etc. can be modified to fit specific needs.
 class Application
 {
   public:
-    Application(DefaultVulkanRenderer* const renderer);
+    Application(VulkanRenderer* const renderer);
 
     /*
     Destroys all used resources.
@@ -25,6 +25,5 @@ class Application
     void processFrame();
 
   protected:
-    // TODO: find a way to keep this field generic, so any renderer can be inserted
-    DefaultVulkanRenderer* const renderer;
+    VulkanRenderer* const renderer;
 };

@@ -11,6 +11,7 @@ void VulkanRenderer::init() {
     selectPhysicalDevice();
     createDevice();
     createSwapchain();
+    createGraphicsPipeline();
 }
 
 const Window* VulkanRenderer::getWindow() const {
