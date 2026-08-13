@@ -1,9 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
-#include <filesystem>
-#include "shader/ShaderModule.h"
-#include "shader/CommandLineShaderCompiler.h"
 #include "output/Logger.h"
 
 // how to include the Vulkan Memory Allocator VMA (if it is installed with the
