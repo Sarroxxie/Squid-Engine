@@ -3,8 +3,6 @@
 #include "setup/InstanceBuilder.h"
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
-#include "shader/ShaderCompiler.h"
-#include "shader/ShaderStageBuilder.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
 #include "Exceptions.h"
@@ -19,8 +17,6 @@ DefaultVulkanRenderer::DefaultVulkanRenderer(Window* const window, bool useDebug
         init();
         // To get a working debugMessenger, we need the call to the non-default
         // constructor which requires a valid instance.
-        // TODO: create this as soon as possible (after Instance creation)!
-        //       -> might need to modify the "init()" structure or add VLs to the "VulkanRenderer"
         if(USE_DEBUG_UTILS)
             debugMessenger = DebugUtilsMessenger(instance);
     } catch(std::exception& e) {
@@ -91,8 +87,7 @@ void DefaultVulkanRenderer::selectPhysicalDevice() {
 void DefaultVulkanRenderer::createDevice() {
     DeviceBuilder builder(physicalDevice, surface);
     // required for swap chain
-    const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-                                                 VK_KHR_SHADER_DRAW_PARAMETERS_EXTENSION_NAME};
+    const std::vector<const char*> extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     QueueFamilyIndices indices;
     builder.requestExtensions(extensions);
     // TODO: may want to specify features here that we will be using
@@ -110,20 +105,4 @@ void DefaultVulkanRenderer::createSwapchain() {
     swapchainBuilder.build(device, swapchain);
     // we need this to be able to later access the Image Views of the Swapchain
     swapchain.retrieveSwapchainImages(device);
-}
-
-void DefaultVulkanRenderer::createGraphicsPipeline() {
-    // TODO: create a single file that contains all necessary functions with a
-    //       namespace, so the hardcoded stuff happens elsewhere
-    //       -> ShaderStages, Pipeline Setup, Render Pass?
-    ShaderModule module = ShaderModule(
-        std::string("rainbow_triangle.slang"),
-        std::vector<ShaderEntryPoint>{{"vertMain", VK_SHADER_STAGE_VERTEX_BIT},
-                                      {"fragMain", VK_SHADER_STAGE_FRAGMENT_BIT}});
-    ShaderCompiler::CommandLine::compile(module);
-
-    std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
-        ShaderStageBuilder::buildShaderStages(device, module);
-
-    // TODO: create the remaining graphics pipeline!
 }

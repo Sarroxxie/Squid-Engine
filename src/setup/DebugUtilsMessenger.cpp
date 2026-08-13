@@ -45,7 +45,7 @@ void destroyDebugUtilsMessengerEXT(VkInstance                   instance,
 
 DebugUtilsMessenger::DebugUtilsMessenger(VkInstance& instance) {
     VkDebugUtilsMessengerCreateInfoEXT createInfo{};
-    populateDebugUtilsMessengerCreateInfo(createInfo);
+    DebugUtilsMessenger::populateDebugUtilsMessengerCreateInfo(createInfo);
 
     check<DebugUtilsMessengerCreationException>(
         createDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &vkDebugMessenger),

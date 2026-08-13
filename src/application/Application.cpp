@@ -2,7 +2,7 @@
 
 #include "output/Logger.h"
 
-Application::Application(VulkanRenderer* const renderer) : renderer(renderer) {}
+Application::Application(DefaultVulkanRenderer* const renderer) : renderer(renderer) {}
 
 void Application::cleanup() {
     renderer->cleanup();

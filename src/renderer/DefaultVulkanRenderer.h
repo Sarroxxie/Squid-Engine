@@ -17,7 +17,7 @@ class DefaultVulkanRenderer : public VulkanRenderer
     // Creates a DefaultApplication with the option of enabling validation layers.
     DefaultVulkanRenderer(Window* const window, bool useDebugUtils);
     // Destroys all used resources.
-    void cleanup() override;
+    void cleanup();
 
   private:
     // whether to use validation layers
@@ -27,17 +27,15 @@ class DefaultVulkanRenderer : public VulkanRenderer
 
     // Uses the InstanceBuilder to create the VkInstance and registers
     // validation layers if "USE_DEBUG_UTILS" is set to true.
-    void createInstance() override;
+    void createInstance();
     // Returns the instance extensions that are required by GLFW.
     std::vector<const char*> getRequiredExtensions();
     // Creates the Window Surface.
-    void createSurface() override;
+    void createSurface();
     // Uses the DefaultPhysicalDeviceSelector to select the most suitable GPU.
-    void selectPhysicalDevice() override;
+    void selectPhysicalDevice();
     // Uses the DeviceBuilder to create the VkDevice.
-    void createDevice() override;
+    void createDevice();
     // Uses the SwapchainBuilder to create the VkSwapchainKHR.
-    void createSwapchain() override;
-
-    void createGraphicsPipeline() override;
+    void createSwapchain();
 };
