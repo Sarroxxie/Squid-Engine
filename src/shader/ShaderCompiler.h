@@ -1,19 +1,38 @@
 #pragma once
 
-#include "ShaderModule.h"
+#include "ShaderEntryPoint.h"
+#include <filesystem>
+
+// TODO: add a "compileIfChanged" function (that internally uses "compile")
+//       -> reduces unnecessary compute
 
 /*
-Contains different variants of shader compilation.
+Manages shader compilation. The compiled shader will be a SPIR-V file inside the
+"SHADER_COMPILE_DIRECTORY_PATH" directory.
 */
-namespace ShaderCompiler {
+class ShaderCompiler
+{
+  public:
+    /*
+    Compiles the shader source file into a SPIR-V file. The resulting file is
+    put into the "SHADER_COMPILE_DIRECTORY_PATH" directory under the same
+    relative path as the shader source file. Returns true if the compilation was
+    successful, false if an error occurred.
+    */
+    virtual bool compile(const std::filesystem::path sourceFilePath,
+                         const std::vector<ShaderEntryPoint> entryPoints) const = 0;
+};
 
-      namespace CommandLine{
-            /*
-            Compile shader using the command line.
-            */
-            bool compile(const ShaderModule& shaderModule);
-
-            // TODO: add a "compileIfChanged" function (that internally uses "compile")
-            //       -> reduces unnecessary compute
-      }
-}
+class CommandLineShaderCompiler : public ShaderCompiler
+{
+  public:
+    /*
+    Compiles the shader source file into a SPIR-V file using "slangc" via system
+    call in the command line. The resulting file is put into the
+    "SHADER_COMPILE_DIRECTORY_PATH" directory under the same relative path as
+    the shader source file. Returns true if the compilation was successful,
+    false if an error occurred.
+    */
+    bool compile(const std::filesystem::path sourceFilePath,
+                 const std::vector<ShaderEntryPoint> entryPoints) const override;
+};

@@ -32,8 +32,7 @@ src/setup/QueueFamilyIndices.cpp
 
 src/shader/ShaderCompiler.h
 src/shader/ShaderCompiler.cpp
-src/shader/ShaderStageBuilder.h
-src/shader/ShaderStageBuilder.cpp
+src/shader/ShaderEntryPoint.h
 src/shader/ShaderModule.h
 src/shader/ShaderModule.cpp
 

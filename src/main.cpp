@@ -16,6 +16,7 @@ constexpr char APP_NAME[] = "Squid Engine";
 int main() {
     /* TODO: roadmap
      *
+     * 2.5 create debug messenger as soon as instance is created
      * 3. implement graphics pipeline + render pass
      * 4. Hello Triangle
      * 4.5 multiple windows (includes multiple swapchains)

@@ -1,16 +1,12 @@
 #pragma once
 
+#include "ShaderEntryPoint.h"
+#include "ShaderCompiler.h"
 #include <vulkan/vulkan.h>
-#include <filesystem>
 
-struct ShaderEntryPoint
-{
-    std::string           name;
-    VkShaderStageFlagBits shaderStage;
-};
-
-
-// TODO: add docs to the class
+/*
+Wrapper for managing shader compilation, shader module and shader stages creation.
+*/
 class ShaderModule
 {
   public:
@@ -29,12 +25,54 @@ class ShaderModule
     ShaderModule(const std::string&                  sourceFilePath,
                  const std::vector<ShaderEntryPoint> entryPoints);
 
-    // stores path of the shader source relative to "SHADER_SOURCE_DIRECTORY_PATH"
-    std::filesystem::path sourceFilePath;
+    /*
+    Compiles the shader source file into a SPIR-V file by using the specified
+    ShaderCompiler. The path to the compiled file is the same as the shader
+    source file but relative to "SHADER_COMPILE_DIRECTORY_PATH". Also note that
+    the file extension of the compiled shader is ".spv" after compilation.
+    Returns true if the compilation was successful, false if an error occurred.
+    */
+    bool compile(const ShaderCompiler* compiler) const;
 
-    // TODO: should this be a map instead to specify the kinds of entry points?
-    std::vector<ShaderEntryPoint> entryPoints;
+    /*
+    Builds the shader stages to be used in the graphics pipeline. This function
+    should only be called after the shader source file has been compiled into a
+    SPIR-V file that has the same path as the shader source file but relative to
+    "SHADER_COMPILE_DIRECTORY_PATH".
+    */
+    void buildShaderStages(const VkDevice& device);
+
+    /*
+    Returns all entry points of the ShaderModule.
+    */
+    std::vector<ShaderEntryPoint> getEntryPoints() const;
+
+    /*
+    Returns the Vulkan handle to the ShaderModule.
+    */
+    VkShaderModule getHandle() const;
+
+    /*
+    Returns the path to the shader source code. Note that the returned path is
+    relative to "SHADER_SOURCE_DIRECTORY_PATH".
+    */
+    std::filesystem::path getSourceFilePath() const;
+
+    /*
+    Destroys the ShaderModule by destroying the VkShaderModule.
+    */
+    void destroy(VkDevice& device);
 
   private:
+    // stores path of the shader source relative to "SHADER_SOURCE_DIRECTORY_PATH"
+    std::filesystem::path                        sourceFilePath;
+    std::vector<ShaderEntryPoint>                entryPoints;
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+    VkShaderModule                               handle = VK_NULL_HANDLE;
+
+    const std::vector<char> readSpirvShaderFile();
+
+    void createVulkanShaderModule(const VkDevice&                 device,
+                                  const std::vector<char>&        shaderCode,
+                                  const VkShaderModuleCreateFlags flags);
 };

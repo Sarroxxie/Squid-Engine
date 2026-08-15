@@ -4,7 +4,7 @@
 #include "setup/DefaultPhysicalDeviceSelector.h"
 #include "setup/DeviceBuilder.h"
 #include "shader/ShaderCompiler.h"
-#include "shader/ShaderStageBuilder.h"
+#include "shader/ShaderModule.h"
 #include "output/VulkanCheck.h"
 #include "output/Logger.h"
 #include "Exceptions.h"
@@ -116,14 +116,21 @@ void DefaultVulkanRenderer::createGraphicsPipeline() {
     // TODO: create a single file that contains all necessary functions with a
     //       namespace, so the hardcoded stuff happens elsewhere
     //       -> ShaderStages, Pipeline Setup, Render Pass?
-    ShaderModule module = ShaderModule(
+    ShaderModule shaderModule = ShaderModule(
         std::string("rainbow_triangle.slang"),
         std::vector<ShaderEntryPoint>{{"vertMain", VK_SHADER_STAGE_VERTEX_BIT},
                                       {"fragMain", VK_SHADER_STAGE_FRAGMENT_BIT}});
-    ShaderCompiler::CommandLine::compile(module);
 
-    std::vector<VkPipelineShaderStageCreateInfo> shaderStages =
-        ShaderStageBuilder::buildShaderStages(device, module);
+    CommandLineShaderCompiler shaderCompiler;
+    shaderModule.compile(&shaderCompiler);
+
+    shaderModule.buildShaderStages(device);
+
+
+    // shader module can only to be destroyed AFTER the pipeline creation is done
+    // TODO: is there any point where we might have to reuse a shader module?
+    //       -> if so, we could also add them to the class and cleanup in the end
+    shaderModule.destroy(device);
 
     // TODO: create the remaining graphics pipeline!
 }
